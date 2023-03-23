@@ -5,23 +5,31 @@
 
 class UnionFind
 {
-    vector<int> ele;
+    vector<int> _parent;
 
 public:
-    UnionFind(int n) : ele(n)
+    UnionFind(int n) : _parent(n)
     {
-        iota(ele.begin(), ele.end(), 0);
-    };
+        iota(_parent.begin(), _parent.end(), 0);
+    }
     void insert(int child, int parent)
     {
-        ele[child] = parent;
+        _parent[child] = parent;
     }
-    int find_root(int child)
+    int find_root(int node)
     {
-        int cur = child;
-        while (ele[cur] != cur)
-            cur = ele[cur];
-        return cur;
+        while (_parent[node] != node)
+            node = _parent[node];
+        return node;
+    }
+    int merge(int node1, int node2)
+    {
+        int n1 = find_root(node1);
+        int n2 = find_root(node2);
+        if (n1 > n2)
+            swap(n1, n2);
+        _parent[n2] = n1;
+        return n1;
     }
 };
 

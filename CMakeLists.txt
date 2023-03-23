@@ -8,7 +8,7 @@ add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(external/googletest)
 
-add_executable(${PROJECT_NAME} LeetCode.cpp)
+add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} DSA)
 # target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
 
