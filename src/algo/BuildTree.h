@@ -1,3 +1,6 @@
+#ifndef __BUILDTREE_H__
+#define __BUILDTREE_H__
+
 #include <TreeNode.h>
 
 #include <queue>
@@ -39,3 +42,5 @@ TreeNode *createTreeLevelOrder(vector<int> &nums)
     }
     return root;
 }
+
+#endif
