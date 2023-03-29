@@ -4,11 +4,12 @@
 #include <vector>
 
 /*
-[1,3,0,0,2,0,0,4]
+count subarray
+
+[0,0,0,2,0,0]
 1 -> 1 = 1
 2 -> 3 = 2+1
 3 -> 6 = 3+2+1
-[0,0,0,2,0,0]
 */
 int64_t zeroFilledSubarray(std::vector<int32_t> &nums)
 {
