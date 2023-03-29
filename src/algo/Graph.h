@@ -9,9 +9,10 @@
 using namespace std;
 
 /*
+https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/
+
 Precondition: Node 1 and Node n on the same connected component
 Getting minimal weighted edge within connected component that includes Node 1 and Node n
-https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/
 */
 int32_t minScore(int32_t n, vector<vector<int32_t>> &roads)
 {
@@ -57,9 +58,15 @@ int32_t minScore(int32_t n, vector<vector<int32_t>> &roads)
     // return res;
 }
 
+/*
+https://leetcode.com/problems/number-of-operations-to-make-network-connected/
+
+* One needs at least N-1 edges to connect N nodes in a connected component
+* In a connected component of a graph, if the number of edges exceeds the number of nodes, then the component necessarily contains redundant edges
+*/
 int32_t makeConnected(int32_t n, vector<vector<int32_t>> &connections)
 {
-    if (connections.size() + 1 < n)
+    if (connections.size() < n - 1)
         return -1;
     UnionFind uf(n);
     int32_t n_connected_component = n;
@@ -81,12 +88,16 @@ https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-
 */
 int32_t minReorder(int32_t n, vector<vector<int32_t>> &connections)
 {
-
     return 0;
 }
 
 /*
 https://leetcode.com/problems/count-unreachable-pairs-of-nodes-in-an-undirected-graph/
+
+n1*n2*n3*n4 + n2*n3*n4 + n3*n4 => O(n^2)
+
+sum = n1+n2+n3+n3;
+n1*(sum-n1) + n2*(sum-n1-n2) + n3*(sum-n1-n2-n3) => O(n)
 */
 int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges)
 {
@@ -94,8 +105,8 @@ int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges)
     vector<int32_t> root_cnt(n, 1);
     for (auto &edge : edges)
     {
-        int r1 = uf.find_root(edge[0]);
-        int r2 = uf.find_root(edge[1]);
+        int32_t r1 = uf.find_root(edge[0]);
+        int32_t r2 = uf.find_root(edge[1]);
         if (r1 > r2)
             swap(r1, r2);
         if (r1 != r2)
@@ -106,12 +117,12 @@ int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges)
     }
 
     int64_t res = 0ll;
-    int32_t prev = 0;
+    int64_t remaining = n;
     for (uint64_t i = 0; i < n; ++i)
         if (uf._parent[i] == i)
         {
-            res += root_cnt[i] * (n - root_cnt[i] - prev);
-            prev += root_cnt[i];
+            remaining -= root_cnt[i];
+            res += remaining * root_cnt[i];
         }
 
     return res;
