@@ -104,7 +104,7 @@ void read(vt<A> &v)
 template <typename T>
 void print(T& arg)
 {
-    cout << arg << endl;
+    cout << arg << ' ';
 }
 template <typename T>
 void print(vector<T> &arg)
