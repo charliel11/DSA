@@ -1,6 +1,6 @@
 #include "parse.h"
 
-void parse(std::string& data_text, std::vector<VecAns>& res)
+void parse(std::string &data_text, std::vector<VecInt> &res)
 {
     replace(data_text.begin(), data_text.end(), ',', ' ');
     stringstream ss1(data_text), ss2;
@@ -17,7 +17,7 @@ void parse(std::string& data_text, std::vector<VecAns>& res)
     }
 }
 
-void parse(std::string& data_text, std::vector<VecIntAns>& res)
+void parse(std::string &data_text, std::vector<VecIntInt> &res)
 {
     replace(data_text.begin(), data_text.end(), ',', ' ');
     stringstream ss1(data_text), ss2;
@@ -35,7 +35,7 @@ void parse(std::string& data_text, std::vector<VecIntAns>& res)
     }
 }
 
-void parse(std::string& data_text, std::vector<Vec2Ans>& res)
+void parse(std::string &data_text, std::vector<VVecInt> &res)
 {
     replace(data_text.begin(), data_text.end(), ',', ' ');
     stringstream ss1(data_text), ss2;
@@ -49,7 +49,7 @@ void parse(std::string& data_text, std::vector<Vec2Ans>& res)
         ss2 << v;
         while (ss2 >> v)
         {
-            auto& temp = get<0>(res.back());
+            auto &temp = get<0>(res.back());
             if (v == "[]")
             {
                 temp.push_back({});
@@ -62,5 +62,17 @@ void parse(std::string& data_text, std::vector<Vec2Ans>& res)
             else
                 temp.back().push_back(stoi(v));
         }
+    }
+}
+
+void parse(std::string &data_text, std::vector<StrStrBool> &res)
+{
+    stringstream ss(data_text);
+    string s1, s2, a;
+    while (getline(ss, s1))
+    {
+        getline(ss, s2);
+        getline(ss, a);
+        res.push_back({s1, s2, a == "true" ? true : false});
     }
 }
