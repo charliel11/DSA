@@ -9,14 +9,16 @@
 
 using namespace std;
 
-using VecInt = tuple<vector<int32_t>, int32_t>; 
-using VVecInt = tuple<vector<vector<int32_t>>, int32_t>;
-using VecIntInt = tuple<vector<int32_t>, int32_t, int32_t>;
+using VIntInt = tuple<vector<int32_t>, int32_t>; 
+using VVIntInt = tuple<vector<vector<int32_t>>, int32_t>;
+using VIntIntInt = tuple<vector<int32_t>, int32_t, int32_t>;
 using StrStrBool = tuple<string, string, bool>;
+using VStrIntInt = tuple<vector<string>, int32_t, int32_t>;
 
-void parse(std::string& data_text, std::vector<VecInt>& res);
-void parse(std::string& data_text, std::vector<VVecInt>& res);
-void parse(std::string& data_text, std::vector<VecIntInt>& res);
+void parse(std::string& data_text, std::vector<VIntInt>& res);
+void parse(std::string& data_text, std::vector<VVIntInt>& res);
+void parse(std::string& data_text, std::vector<VIntIntInt>& res);
 void parse(std::string& data_text, std::vector<StrStrBool>& res);
+void parse(std::string& data_text, std::vector<VStrIntInt>& res);
 
 #endif

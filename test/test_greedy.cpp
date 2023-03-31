@@ -19,7 +19,7 @@ R"([-1,-8,0,5,-7]
 4
 )"};
 
-    vector<VecInt> cases;
+    vector<VIntInt> cases;
     parse(data_text, cases);
     for (auto& c : cases)
     {

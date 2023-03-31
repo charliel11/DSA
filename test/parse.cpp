@@ -1,6 +1,6 @@
 #include "parse.h"
 
-void parse(std::string &data_text, std::vector<VecInt> &res)
+void parse(std::string &data_text, std::vector<VIntInt> &res)
 {
     replace(data_text.begin(), data_text.end(), ',', ' ');
     stringstream ss1(data_text), ss2;
@@ -17,7 +17,26 @@ void parse(std::string &data_text, std::vector<VecInt> &res)
     }
 }
 
-void parse(std::string &data_text, std::vector<VecIntInt> &res)
+void parse(std::string& data_text, std::vector<VStrIntInt>& res)
+{
+    replace(data_text.begin(), data_text.end(), ',', ' ');
+    replace(data_text.begin(), data_text.end(), '"', ' ');
+    stringstream ss1(data_text), ss2;
+    string v, i, a;
+    while (getline(ss1, v))
+    {
+        getline(ss1, i);
+        getline(ss1, a);
+        res.push_back({vector<string>{}, stoi(i), stoi(a)});
+        ss2.clear();
+        v = v.substr(1, v.length() - 2);
+        ss2 << v;
+        while (ss2 >> v)
+            get<0>(res.back()).push_back(v);
+    }
+}
+
+void parse(std::string &data_text, std::vector<VIntIntInt> &res)
 {
     replace(data_text.begin(), data_text.end(), ',', ' ');
     stringstream ss1(data_text), ss2;
@@ -35,7 +54,7 @@ void parse(std::string &data_text, std::vector<VecIntInt> &res)
     }
 }
 
-void parse(std::string &data_text, std::vector<VVecInt> &res)
+void parse(std::string &data_text, std::vector<VVIntInt> &res)
 {
     replace(data_text.begin(), data_text.end(), ',', ' ');
     stringstream ss1(data_text), ss2;
