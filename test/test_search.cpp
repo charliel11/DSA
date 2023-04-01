@@ -1,15 +1,15 @@
 #include "parse.h"
-#include <Count.h>
+#include <BinarySearch.h>
 
-TEST(Count, zeroFilledSubarray)
+TEST(BINARYSEARCH, search)
 {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     std::string data_text = readtxt(DATAPATH + test_name + EXT);
-    
-    vector<VIntInt> cases;
+
+    vector<VIntIntInt> cases;
     parse(data_text, cases);
-    for (auto &c : cases)
+    for (auto& c : cases)
     {
-        ASSERT_EQ(zeroFilledSubarray(get<0>(c)), get<1>(c));
+        ASSERT_EQ(search(get<0>(c), get<1>(c)), get<2>(c));
     }
 }
