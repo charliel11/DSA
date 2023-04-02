@@ -1,5 +1,4 @@
-#ifndef __PARSE_H__
-#define __PARSE_H__
+#pragma once
 
 #include <gtest/gtest.h>
 #include <algorithm>
@@ -13,6 +12,7 @@ static const std::string DATAPATH = "D:/project/DSA/test/data/";
 static const std::string EXT = ".txt";
 
 using VIntInt = tuple<vector<int32_t>, int32_t>;
+using VIntVIntIntVInt = tuple<vector<int32_t>, vector<int32_t>, int64_t, vector<int32_t>>;
 using VVIntInt = tuple<vector<vector<int32_t>>, int32_t>;
 using VIntIntInt = tuple<vector<int32_t>, int32_t, int32_t>;
 using IntVVIntInt = tuple<int32_t, vector<vector<int32_t>>, int32_t>;
@@ -25,6 +25,6 @@ void parse(std::string &data_text, std::vector<VIntIntInt> &res);
 void parse(std::string &data_text, std::vector<StrStrBool> &res);
 void parse(std::string &data_text, std::vector<VStrIntInt> &res);
 void parse(std::string &data_text, std::vector<IntVVIntInt> &res);
-std::string readtxt(std::string path);
+void parse(std::string &data_text, std::vector<VIntVIntIntVInt> &res);
 
-#endif
+std::string readtxt(std::string path);

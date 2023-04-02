@@ -4,87 +4,100 @@
 
 #include "parse.h"
 
+/*
+[1,2,3,4,5,6]
+*/
+void read(string &text, vector<int32_t> &res)
+{
+    stringstream ss;
+    replace(text.begin(), text.end(), ',', ' ');
+    text = text.substr(1, text.length() - 2);
+    ss << text;
+    while (ss >> text)
+        res.push_back(stoi(text));
+}
+
+/*
+[[1,2,3],[4,5,6]]
+*/
+void read(string &text, vector<vector<int32_t>> &res)
+{
+    stringstream ss;
+    replace(text.begin(), text.end(), ',', ' ');
+    text = text.substr(1, text.length() - 2);
+    ss << text;
+    while (ss >> text)
+    {
+        auto &tmp = res;
+        if (text == "[]")
+        {
+            tmp.push_back({});
+        }
+        else if (text[0] == '[')
+        {
+            tmp.push_back({});
+            tmp.back().push_back(stoi(text.substr(1)));
+        }
+        else
+            tmp.back().push_back(stoi(text));
+    }
+}
+
+/*
+["123", "345"]
+*/
+void read(string &text, vector<string> &res)
+{
+    replace(text.begin(), text.end(), ',', ' ');
+    replace(text.begin(), text.end(), '"', ' ');
+    stringstream ss;
+    text = text.substr(1, text.length() - 2);
+    ss << text;
+    while (ss >> text)
+        res.push_back(text);
+}
+
 void parse(std::string &data_text, std::vector<VIntInt> &res)
 {
-    replace(data_text.begin(), data_text.end(), ',', ' ');
-    stringstream ss1(data_text), ss2;
+    stringstream ss(data_text);
     string v, a;
-    while (getline(ss1, v))
+    while (getline(ss, v), getline(ss, a))
     {
-        getline(ss1, a);
         res.push_back({vector<int32_t>{}, stoi(a)});
-        ss2.clear();
-        v = v.substr(1, v.length() - 2);
-        ss2 << v;
-        while (ss2 >> v)
-            get<0>(res.back()).push_back(stoi(v));
+        read(v, get<0>(res.back()));
     }
 }
 
 void parse(std::string &data_text, std::vector<VStrIntInt> &res)
 {
-    replace(data_text.begin(), data_text.end(), ',', ' ');
-    replace(data_text.begin(), data_text.end(), '"', ' ');
-    stringstream ss1(data_text), ss2;
+    stringstream ss(data_text);
     string v, i, a;
-    while (getline(ss1, v))
+    while (getline(ss, v) && getline(ss, i) && getline(ss, a))
     {
-        getline(ss1, i);
-        getline(ss1, a);
         res.push_back({vector<string>{}, stoi(i), stoi(a)});
-        ss2.clear();
-        v = v.substr(1, v.length() - 2);
-        ss2 << v;
-        while (ss2 >> v)
-            get<0>(res.back()).push_back(v);
+        read(v, get<0>(res.back()));
     }
 }
 
 void parse(std::string &data_text, std::vector<VIntIntInt> &res)
 {
-    replace(data_text.begin(), data_text.end(), ',', ' ');
-    stringstream ss1(data_text), ss2;
+    stringstream ss(data_text);
     string v, i, a;
-    while (getline(ss1, v))
+    while (getline(ss, v) && getline(ss, i) && getline(ss, a))
     {
-        getline(ss1, i);
-        getline(ss1, a);
         res.push_back({vector<int32_t>{}, stoi(i), stoi(a)});
-        ss2.clear();
-        v = v.substr(1, v.length() - 2);
-        ss2 << v;
-        while (ss2 >> v)
-            get<0>(res.back()).push_back(stoi(v));
+        read(v, get<0>(res.back()));
     }
 }
 
 void parse(std::string &data_text, std::vector<VVIntInt> &res)
 {
-    replace(data_text.begin(), data_text.end(), ',', ' ');
-    stringstream ss1(data_text), ss2;
+    stringstream ss(data_text);
     string v, a;
-    while (getline(ss1, v))
+    while (getline(ss, v) && getline(ss, a))
     {
-        getline(ss1, a);
         res.push_back({vector<vector<int32_t>>{}, stoi(a)});
-        ss2.clear();
-        v = v.substr(1, v.length() - 2);
-        ss2 << v;
-        while (ss2 >> v)
-        {
-            auto &temp = get<0>(res.back());
-            if (v == "[]")
-            {
-                temp.push_back({});
-            }
-            else if (v[0] == '[')
-            {
-                temp.push_back({});
-                temp.back().push_back(stoi(v.substr(1)));
-            }
-            else
-                temp.back().push_back(stoi(v));
-        }
+        read(v, get<0>(res.back()));
     }
 }
 
@@ -92,42 +105,33 @@ void parse(std::string &data_text, std::vector<StrStrBool> &res)
 {
     stringstream ss(data_text);
     string s1, s2, a;
-    while (getline(ss, s1))
+    while (getline(ss, s1) && getline(ss, s2) && getline(ss, a))
     {
-        getline(ss, s2);
-        getline(ss, a);
         res.push_back({s1, s2, a == "true" ? true : false});
     }
 }
 
 void parse(std::string &data_text, std::vector<IntVVIntInt> &res)
 {
-    replace(data_text.begin(), data_text.end(), ',', ' ');
-    stringstream ss1(data_text), ss2;
+    stringstream ss(data_text);
     string i, v, a;
-    while (getline(ss1, i))
+    while (getline(ss, i) && getline(ss, v) && getline(ss, a))
     {
-        getline(ss1, v);
-        getline(ss1, a);
         res.push_back({stoi(i), vector<vector<int32_t>>{}, stoi(a)});
-        ss2.clear();
-        v = v.substr(1, v.length() - 2);
-        ss2 << v;
-        while (ss2 >> v)
-        {
-            auto &temp = get<1>(res.back());
-            if (v == "[]")
-            {
-                temp.push_back({});
-            }
-            else if (v[0] == '[')
-            {
-                temp.push_back({});
-                temp.back().push_back(stoi(v.substr(1)));
-            }
-            else
-                temp.back().push_back(stoi(v));
-        }
+        read(v, get<1>(res.back()));
+    }
+}
+
+void parse(std::string &data_text, std::vector<VIntVIntIntVInt> &res)
+{
+    stringstream ss(data_text);
+    string v1, v2, i, v3;
+    while (getline(ss, v1) && getline(ss, v2) && getline(ss, i) && getline(ss, v3))
+    {
+        res.push_back({vector<int32_t>{}, vector<int32_t>{}, stoll(i), vector<int32_t>{}});
+        read(v1, get<0>(res.back()));
+        read(v2, get<1>(res.back()));
+        read(v3, get<3>(res.back()));
     }
 }
 

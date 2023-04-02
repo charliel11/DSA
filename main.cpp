@@ -1,6 +1,13 @@
 // #include <gtest/gtest.h>
 #include <Utility.h>
 #include <Trie.h>
+#include <memory>
+
+struct C
+{
+    std::unique_ptr<C> m_child;
+    C *m_parent;
+};
 
 auto solve()
 {
@@ -8,8 +15,8 @@ auto solve()
     read(arr);
     int res = 0;
     int n = arr.size();
-    
-    unordered_map<int,vector<int>> map;
+
+    unordered_map<int, vector<int>> map;
     for (int i = 0; i < n; ++i)
         map[arr[i]].push_back(i);
 
@@ -23,24 +30,30 @@ auto solve()
         while (levelSize--)
         {
             int cur = q.front();
-            if (cur == n-1) return res;
-            if (cur == n-2) return res+1;
+            if (cur == n - 1)
+                return res;
+            if (cur == n - 2)
+                return res + 1;
             q.pop();
 
-            if (cur > 0 && visited[cur-1] == 0) {
-                visited[cur-1]=1;
-                q.push(cur-1);
+            if (cur > 0 && visited[cur - 1] == 0)
+            {
+                visited[cur - 1] = 1;
+                q.push(cur - 1);
             }
-            if (cur < n-1 && visited[cur+1] == 0) {
-                visited[cur+1]=1;
-                q.push(cur+1);
+            if (cur < n - 1 && visited[cur + 1] == 0)
+            {
+                visited[cur + 1] = 1;
+                q.push(cur + 1);
             }
-            for (int& next : map[arr[cur]]) {
-                if (next == n-1) return res+1;
-                if (visited[next] == 0) 
+            for (int &next : map[arr[cur]])
+            {
+                if (next == n - 1)
+                    return res + 1;
+                if (visited[next] == 0)
                 {
                     q.push(next);
-                    visited[next]=1;
+                    visited[next] = 1;
                 }
             }
             map[arr[cur]].clear();
@@ -49,8 +62,13 @@ auto solve()
     }
     return res;
 }
+
 int main()
 {
+    auto parent = make_unique<C>();
+    parent->m_child;
+    parent->m_parent;
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     int t = 3;

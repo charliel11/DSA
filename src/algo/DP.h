@@ -1,5 +1,4 @@
-#ifndef __DP_H__
-#define __DP_H__
+#pragma once
 
 #include <vector>
 #include <string>
@@ -100,38 +99,38 @@ int32_t minCost(vector<int32_t> &nums, int32_t k)
 https://leetcode.com/problems/scramble-string/
 
 */
-bool _isScramble_dfs(string &s1, string &s2, int32_t l1, int32_t r1, int32_t l2, int32_t r2, int8_t dp[31][31][31])
-{
-    if (l1 == r1)
-        return s1[l1] == s2[l2];
-
-    if (dp[l1][r1][l2] != 0)
-        return dp[l1][r1][l2] == 1;
-
-    dp[l1][r1][l2] = -1;
-    int32_t len = r1 - l1;
-    for (int32_t i = 0; i < len; ++i)
-    {
-        // l1 = 0, r1 = 5 [XXXXXX]
-        // i = 0,1,2,3,4
-        if (_isScramble_dfs(s1, s2, l1, l1 + i, l2, l2 + i, dp) && _isScramble_dfs(s1, s2, l1 + i + 1, r1, l2 + i + 1, r2, dp))
-        {
-            dp[l1][r1][l2] = 1;
-            break;
-        }
-        if (_isScramble_dfs(s1, s2, l1, l1 + i, r2 - i, r2, dp) && _isScramble_dfs(s1, s2, l1 + i + 1, r1, l2, r2 - i - 1, dp))
-        {
-            dp[l1][r1][l2] = 1;
-            break;
-        }
-    }
-    return dp[l1][r1][l2] == 1;
-}
 bool isScramble(string s1, string s2)
 {
     int32_t n1 = s1.size();
     int8_t dp[31][31][31]{0};
-    bool res = _isScramble_dfs(s1, s2, 0, n1 - 1, 0, n1 - 1, dp);
+    auto dfs = [&](auto const &dfs, int32_t l1, int32_t r1, int32_t l2, int32_t r2) -> bool
+    {
+        if (l1 == r1)
+            return s1[l1] == s2[l2];
+
+        if (dp[l1][r1][l2] != 0)
+            return dp[l1][r1][l2] == 1;
+
+        dp[l1][r1][l2] = -1;
+        int32_t len = r1 - l1;
+        for (int32_t i = 0; i < len; ++i)
+        {
+            // l1 = 0, r1 = 5 [XXXXXX]
+            // i = 0,1,2,3,4
+            if (dfs(dfs, l1, l1 + i, l2, l2 + i) && dfs(dfs, l1 + i + 1, r1, l2 + i + 1, r2))
+            {
+                dp[l1][r1][l2] = 1;
+                break;
+            }
+            if (dfs(dfs, l1, l1 + i, r2 - i, r2) && dfs(dfs, l1 + i + 1, r1, l2, r2 - i - 1))
+            {
+                dp[l1][r1][l2] = 1;
+                break;
+            }
+        }
+        return dp[l1][r1][l2] == 1;
+    };
+    bool res = dfs(dfs, 0, n1 - 1, 0, n1 - 1);
     return res;
 }
 
@@ -147,38 +146,7 @@ https://leetcode.com/problems/number-of-ways-of-cutting-a-pizza/
 ]
 
 */
-int32_t _ways_dfs(int32_t k, int32_t idx, vector<string> &pizza, NumMatrix &apple,
-                  int32_t r1, int32_t r2, int32_t c1, int32_t c2,
-                  int32_t dp[51][51][11])
-{
-    if (idx == k)
-    {
-        if (apple.sumRegion(r1, c1, r2, c2) > 0)
-            return 1;
-        else
-            return 0;
-    }
-
-    if (dp[r1][c1][idx] != -1)
-    {
-        return dp[r1][c1][idx];
-    }
-
-    int32_t cnt = 0;
-    for (int32_t i = r1; i < r2; ++i)
-    {
-        if (apple.sumRegion(r1, c1, i, c2) > 0)
-            cnt = (cnt + _ways_dfs(k, idx + 1, pizza, apple, i + 1, r2, c1, c2, dp)) % 1000000007;
-    }
-    for (int32_t i = c1; i < c2; ++i)
-    {
-        if (apple.sumRegion(r1, c1, r2, i) > 0)
-            cnt = (cnt + _ways_dfs(k, idx + 1, pizza, apple, r1, r2, i + 1, c2, dp)) % 1000000007;
-    }
-    return dp[r1][c1][idx] = cnt;
-}
-
-int32_t ways1(vector<string> &pizza, int32_t k)
+int32_t ways(vector<string> &pizza, int32_t k)
 {
     int32_t row = pizza.size(), col = pizza[0].size();
     vector<vector<int32_t>> cnt(row, vector<int32_t>(col, 0));
@@ -190,12 +158,42 @@ int32_t ways1(vector<string> &pizza, int32_t k)
     NumMatrix apple(cnt);
     int32_t dp[51][51][11];
     memset(dp, 0xff, sizeof(dp));
-    int32_t res = _ways_dfs(k, 1, pizza, apple, 0, row - 1, 0, col - 1, dp);
+
+    auto dfs = [&](auto const &dfs, int32_t idx, int32_t r1, int32_t c1)
+    {
+        if (idx == k)
+        {
+            if (apple.sumRegion(r1, c1, row - 1, col - 1) > 0)
+                return 1;
+            else
+                return 0;
+        }
+
+        if (dp[r1][c1][idx] != -1)
+        {
+            return dp[r1][c1][idx];
+        }
+
+        int32_t cnt = 0;
+        for (int32_t i = r1; i < row - 1; ++i)
+        {
+            if (apple.sumRegion(r1, c1, i, col - 1) > 0)
+                cnt = (cnt + dfs(dfs, idx + 1, i + 1, c1)) % 1000000007;
+        }
+        for (int32_t i = c1; i < col - 1; ++i)
+        {
+            if (apple.sumRegion(r1, c1, row - 1, i) > 0)
+                cnt = (cnt + dfs(dfs, idx + 1, r1, i + 1)) % 1000000007;
+        }
+        return dp[r1][c1][idx] = cnt;
+    };
+
+    int32_t res = dfs(dfs, 1, 0, 0);
 
     return res;
 }
 
-int ways(vector<string> &pizza, int k)
+int ways1(vector<string> &pizza, int k)
 {
     const int mod = 1000000000 + 7;
     int rows = pizza.size();
@@ -225,5 +223,3 @@ int ways(vector<string> &pizza, int k)
                 }
     return dp[rows][cols][k];
 }
-
-#endif

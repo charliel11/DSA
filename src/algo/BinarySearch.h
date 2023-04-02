@@ -1,5 +1,4 @@
-#ifndef __BINARYSEARCH_H__
-#define __BINARYSEARCH_H__
+#pragma once
 
 #include <vector>
 
@@ -35,7 +34,32 @@ int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums, int32_t target)
         else
             right = mid;
     }
-    return left;
+    return nums[left] >= target ? left : left + 1;
 };
 
-#endif
+/*
+https://leetcode.com/problems/successful-pairs-of-spells-and-potions/
+*/
+vector<int32_t> successfulPairs(vector<int32_t> &spells, vector<int32_t> &potions, int64_t success)
+{
+    size_t n = spells.size();
+    size_t m = potions.size();
+    sort(begin(potions), end(potions));
+    vector<int32_t> res(n);
+    for (size_t i = 0; i < n; ++i)
+    {
+        /*
+        double dd = 5433930978;
+        float ff = 5433930978;
+        */
+        int64_t target = std::ceil(static_cast<double>(success) / spells[i]);
+        if (target > 100000)
+            res[i] = 0;
+        else
+        {
+            int32_t idx = firstGreatOrLeftMostEqual(potions, target);
+            res[i] = m - idx;
+        }
+    }
+    return res;
+}
