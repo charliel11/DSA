@@ -1,5 +1,4 @@
-#ifndef __UTILITY_H__
-#define __UTILITY_H__
+#pragma once
 
 #include <vector>
 #include <stack>
@@ -43,49 +42,39 @@ using namespace std;
 #define FOR(...) F_ORC(__VA_ARGS__)(__VA_ARGS__)
 
 template <class T>
-void read(T &x)
-{
+void read(T &x) {
     cin >> x;
 }
 template <class H, class... T>
-void read(H &h, T &...t)
-{
+void read(H &h, T &...t) {
     read(h);
     read(t...);
 }
 template <class A, size_t S>
-void read(array<A, S> &x)
-{
+void read(array<A, S> &x) {
     EACH(a, x)
     read(a);
 }
 template <class A>
-void read(vt<vt<A>> &v)
-{
+void read(vt<vt<A>> &v) {
     string s;
     cin >> s;
     v.clear();
     replace(s.begin(), s.end(), ',', ' ');
     stringstream ss(s.substr(1, s.size() - 2));
     string word;
-    while (ss >> word)
-    {
-        if (word == "[]")
-        {
+    while (ss >> word) {
+        if (word == "[]") {
             v.push_back({});
-        }
-        else if (word[0] == '[')
-        {
+        } else if (word[0] == '[') {
             v.push_back({});
             v.back().push_back(stoi(word.substr(1)));
-        }
-        else
+        } else
             v.back().push_back(stoi(word));
     }
 }
 template <class A>
-void read(vt<A> &v)
-{
+void read(vt<A> &v) {
     string s;
     cin >> s;
     v.clear();
@@ -93,8 +82,7 @@ void read(vt<A> &v)
     s = s.substr(1, s.length() - 2);
     stringstream ss(s);
     string word;
-    while (ss >> word)
-    {
+    while (ss >> word) {
         v.push_back(stoi(word));
     }
 }
@@ -102,20 +90,17 @@ void read(vt<A> &v)
 #pragma region print tool
 
 template <typename T>
-void print(T& arg)
-{
+void print(T &arg) {
     cout << arg << ' ';
 }
 template <typename T>
-void print(vector<T> &arg)
-{
+void print(vector<T> &arg) {
     for (T a : arg)
         std::cout << a << ',';
     std::cout << '\n';
 }
 template <typename T>
-void print(vector<vector<T>> &arg)
-{
+void print(vector<vector<T>> &arg) {
     for (vector<T> &a : arg)
         for (T &b : a)
             std::cout << b << ',';
@@ -123,46 +108,13 @@ void print(vector<vector<T>> &arg)
     std::cout << '\n';
 }
 template <typename T>
-void print(pair<T, T> &arg)
-{
+void print(pair<T, T> &arg) {
     std::cout << arg.first << ',' << arg.second << '\n';
 }
 template <typename T, typename... Types>
-void print(T firstArg, Types... args)
-{
+void print(T firstArg, Types... args) {
     print(firstArg); // call print() for the first argument
     print(args...);  // call print() for remaining arguments
 }
 
 #pragma endregion
-
-class Node
-{
-public:
-    int val;
-    vector<Node *> children;
-
-    Node() {}
-
-    Node(int _val)
-    {
-        val = _val;
-    }
-
-    Node(int _val, vector<Node *> _children)
-    {
-        val = _val;
-        children = _children;
-    }
-};
-
-struct ListNode
-{
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
-#endif

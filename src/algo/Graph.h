@@ -14,12 +14,10 @@ https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/
 Precondition: Node 1 and Node n on the same connected component
 Getting minimal weighted edge within connected component that includes Node 1 and Node n
 */
-int32_t minScore(int32_t n, vector<vector<int32_t>> &roads)
-{
+int32_t minScore(int32_t n, vector<vector<int32_t>> &roads) {
     UnionFind uf(n + 1);
     vector<int32_t> min_dist(n + 1, INT32_MAX);
-    for (auto &edge : roads)
-    {
+    for (auto &edge : roads) {
         int32_t r1 = uf.find_root(edge[0]);
         int32_t r2 = uf.find_root(edge[1]);
         if (r1 > r2)
@@ -64,14 +62,12 @@ https://leetcode.com/problems/number-of-operations-to-make-network-connected/
 * One needs at least N-1 edges to connect N nodes in a connected component
 * In a connected component of a graph, if the number of edges exceeds the number of nodes, then the component necessarily contains redundant edges
 */
-int32_t makeConnected(int32_t n, vector<vector<int32_t>> &connections)
-{
+int32_t makeConnected(int32_t n, vector<vector<int32_t>> &connections) {
     if (connections.size() < n - 1)
         return -1;
     UnionFind uf(n);
     int32_t n_connected_component = n;
-    for (auto &edge : connections)
-    {
+    for (auto &edge : connections) {
         int32_t r1 = uf.find_root(edge[0]);
         int32_t r2 = uf.find_root(edge[1]);
         if (r1 > r2)
@@ -86,8 +82,7 @@ int32_t makeConnected(int32_t n, vector<vector<int32_t>> &connections)
 /*
 https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/
 */
-int32_t minReorder(int32_t n, vector<vector<int32_t>> &connections)
-{
+int32_t minReorder(int32_t n, vector<vector<int32_t>> &connections) {
     return 0;
 }
 
@@ -99,18 +94,15 @@ n1*n2*n3*n4 + n2*n3*n4 + n3*n4 => O(n^2)
 sum = n1+n2+n3+n3;
 n1*(sum-n1) + n2*(sum-n1-n2) + n3*(sum-n1-n2-n3) => O(n)
 */
-int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges)
-{
+int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges) {
     UnionFind uf(n);
     vector<int32_t> root_cnt(n, 1);
-    for (auto &edge : edges)
-    {
+    for (auto &edge : edges) {
         int32_t r1 = uf.find_root(edge[0]);
         int32_t r2 = uf.find_root(edge[1]);
         if (r1 > r2)
             swap(r1, r2);
-        if (r1 != r2)
-        {
+        if (r1 != r2) {
             uf.insert(r2, r1);
             root_cnt[r1] += root_cnt[r2];
         }
@@ -119,8 +111,7 @@ int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges)
     int64_t res = 0ll;
     int64_t remaining = n;
     for (uint64_t i = 0; i < n; ++i)
-        if (uf._parent[i] == i)
-        {
+        if (uf._parent[i] == i) {
             remaining -= root_cnt[i];
             res += remaining * root_cnt[i];
         }
@@ -131,14 +122,12 @@ int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges)
 /*
 https://leetcode.com/problems/longest-cycle-in-a-graph/
 */
-int32_t longestCycle(vector<int32_t> &edges)
-{
+int32_t longestCycle(vector<int32_t> &edges) {
     int32_t n = edges.size();
     vector<int32_t> in_degree(n, 0);
     vector<int8_t> visit(n, 0);
 
-    for (int32_t i = 0; i < n; ++i)
-    {
+    for (int32_t i = 0; i < n; ++i) {
         if (edges[i] == -1)
             continue;
         ++in_degree[edges[i]];
@@ -150,15 +139,13 @@ int32_t longestCycle(vector<int32_t> &edges)
             q.push(i);
 
     int32_t no_cycle = n;
-    while (!q.empty())
-    {
+    while (!q.empty()) {
         int32_t cur = q.front();
         visit[cur] = 1;
         q.pop();
         --no_cycle;
         int32_t next = edges[cur];
-        if (next != -1)
-        {
+        if (next != -1) {
             --in_degree[next];
             if (in_degree[next] == 0)
                 q.push(next);
@@ -168,15 +155,13 @@ int32_t longestCycle(vector<int32_t> &edges)
         return -1;
 
     int32_t res = 0;
-    for (int32_t i = 0; i < n; ++i)
-    {
+    for (int32_t i = 0; i < n; ++i) {
         if (visit[i] == 1)
             continue;
 
         int32_t cur = i;
         int32_t cnt = 0;
-        while (visit[edges[cur]] != 1)
-        {
+        while (visit[edges[cur]] != 1) {
             ++cnt;
             cur = edges[cur];
             visit[cur] = 1;
@@ -185,29 +170,24 @@ int32_t longestCycle(vector<int32_t> &edges)
     }
     return res;
 }
-int32_t longestCycle_(vector<int32_t> &edges)
-{
+int32_t longestCycle_(vector<int32_t> &edges) {
     const int32_t n = edges.size();
     int32_t ans = -1, time = 1;
     vector<int32_t> time_visited(n);
 
-    for (int32_t i = 0; i < n; ++i)
-    {
-        if (time_visited[i] > 0)
-        {
+    for (int32_t i = 0; i < n; ++i) {
+        if (time_visited[i] > 0) {
             continue;
         }
 
         const int32_t start_time = time;
         int32_t j = i;
-        while (j >= 0 && time_visited[j] == 0)
-        {
+        while (j >= 0 && time_visited[j] == 0) {
             time_visited[j] = time++;
             j = edges[j];
         }
 
-        if (j != -1 && time_visited[j] >= start_time)
-        {
+        if (j != -1 && time_visited[j] >= start_time) {
             ans = max(ans, time - time_visited[j]);
         }
     }

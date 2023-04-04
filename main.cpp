@@ -2,12 +2,7 @@
 #include <Utility.h>
 #include <Trie.h>
 #include <memory>
-
-struct C
-{
-    std::unique_ptr<C> m_child;
-    C *m_parent;
-};
+#include <thread>
 
 auto solve()
 {
@@ -63,21 +58,29 @@ auto solve()
     return res;
 }
 
+struct C
+{
+    std::unique_ptr<C> m_child;
+    C *m_parent;
+};
+
+void func() { std::cout << "Hello Thread" << std::endl; };
+
 int main()
 {
-    auto parent = make_unique<C>();
-    parent->m_child;
-    parent->m_parent;
-
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    int t = 3;
-    FOR(t)
-    {
-        cout << "Case #" << i + 1 << ": " << endl;
-        auto res = solve();
-        print(res);
-        print("Complete");
-    }
+    std::thread t1([&]
+                   { func(); });
+    
+    t1.join();
+    // ios::sync_with_stdio(0);
+    // cin.tie(0);
+    // int t = 3;
+    // FOR(t)
+    // {
+    //     cout << "Case #" << i + 1 << ": " << endl;
+    //     auto res = solve();
+    //     print(res);
+    //     print("Complete");
+    // }
     return 1;
 }

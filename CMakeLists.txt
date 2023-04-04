@@ -1,16 +1,32 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(LeetCode)
-set (CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CUDA_ARCHITECTURES 86)
+
+project(LeetCode LANGUAGES C CXX)
+
+if (PROJECT_BINARY_DIR STREQUAL PROJECT_SOURCE_DIR)
+message(WARNING "The binary directory of CMake cannot be the same as source directory!")
+endif()
+
+if (NOT CMAKE_BUILD_TYPE)
+set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if (WIN32)
+    add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
+endif()
 
 # enable_testing()
+# find_package(Threads REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(external/googletest)
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} DSA)
+target_link_libraries(${PROJECT_NAME} PUBLIC DSA)
 # target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
 
 # include(GoogleTest)
