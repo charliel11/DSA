@@ -4,9 +4,9 @@
 /*
 [[2,4],[1,3],[2,4],[1,3]]
 */
-TEST(NODE, GRAPH) {
+TEST(NODE, cloneGraph) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + "createGraph" + EXT);
 
     vector<VVIntInt> cases;
     parse(data_text, cases);
