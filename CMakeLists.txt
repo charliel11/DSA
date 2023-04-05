@@ -6,27 +6,32 @@ set(CUDA_ARCHITECTURES 86)
 
 project(LeetCode LANGUAGES C CXX)
 
-if (PROJECT_BINARY_DIR STREQUAL PROJECT_SOURCE_DIR)
-message(WARNING "The binary directory of CMake cannot be the same as source directory!")
+# message("Your C++ compiler supports these C++ features:")
+
+# foreach(i ${CMAKE_CXX_COMPILE_FEATURES})
+# message("${i}")
+# endforeach()
+if(PROJECT_BINARY_DIR STREQUAL PROJECT_SOURCE_DIR)
+    message(WARNING "The binary directory of CMake cannot be the same as source directory!")
 endif()
 
-if (NOT CMAKE_BUILD_TYPE)
-set(CMAKE_BUILD_TYPE Release)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if (WIN32)
+if(WIN32)
     add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
 endif()
 
 # enable_testing()
 # find_package(Threads REQUIRED)
-
 add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(external/googletest)
 
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} PUBLIC DSA)
+
 # target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
 
 # include(GoogleTest)

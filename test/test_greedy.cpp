@@ -22,3 +22,14 @@ TEST(GREEDY, numRescueBoats) {
         ASSERT_EQ(numRescueBoats(get<0>(c), get<1>(c)), get<2>(c));
     }
 }
+
+TEST(GREEDY, minimizeArrayValue) {
+    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+
+    vector<VIntInt> cases;
+    parse(data_text, cases);
+    for (auto &c : cases) {
+        ASSERT_EQ(minimizeArrayValue(get<0>(c)), get<1>(c));
+    }
+}

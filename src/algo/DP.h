@@ -90,7 +90,7 @@ https://leetcode.com/problems/scramble-string/
 */
 bool isScramble(string s1, string s2) {
     int32_t n1 = s1.size();
-    int8_t dp[31][31][31]{0};
+    int8_t dp[31][31][31]{{{0}}};
     auto dfs = [&](auto const &dfs, int32_t l1, int32_t r1, int32_t l2, int32_t r2) -> bool {
         if (l1 == r1)
             return s1[l1] == s2[l2];
