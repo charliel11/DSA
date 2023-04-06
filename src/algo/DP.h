@@ -35,7 +35,7 @@ int32_t minPathSum(vector<vector<int32_t>> &grid) {
 https://leetcode.com/problems/minimum-cost-for-tickets/description/
 */
 int32_t mincostTickets(vector<int32_t> &days, vector<int32_t> &costs) {
-    int32_t dp[3];
+    int32_t dp[3]{0};
     int32_t n = days.size();
     for (int32_t i = 0; i < n; ++i) {
     }
@@ -88,8 +88,7 @@ https://leetcode.com/problems/scramble-string/
 bool isScramble(string s1, string s2) {
     int32_t n1 = s1.size();
     int8_t dp[31][31][31]{{{0}}};
-    auto dfs = [&](auto const &dfs, int32_t l1, int32_t r1, int32_t l2,
-                   int32_t r2) -> bool {
+    auto dfs = [&](auto const &dfs, int32_t l1, int32_t r1, int32_t l2, int32_t r2) -> bool {
         if (l1 == r1)
             return s1[l1] == s2[l2];
 
@@ -101,13 +100,11 @@ bool isScramble(string s1, string s2) {
         for (int32_t i = 0; i < len; ++i) {
             // l1 = 0, r1 = 5 [XXXXXX]
             // i = 0,1,2,3,4
-            if (dfs(dfs, l1, l1 + i, l2, l2 + i) &&
-                dfs(dfs, l1 + i + 1, r1, l2 + i + 1, r2)) {
+            if (dfs(dfs, l1, l1 + i, l2, l2 + i) && dfs(dfs, l1 + i + 1, r1, l2 + i + 1, r2)) {
                 dp[l1][r1][l2] = 1;
                 break;
             }
-            if (dfs(dfs, l1, l1 + i, r2 - i, r2) &&
-                dfs(dfs, l1 + i + 1, r1, l2, r2 - i - 1)) {
+            if (dfs(dfs, l1, l1 + i, r2 - i, r2) && dfs(dfs, l1 + i + 1, r1, l2, r2 - i - 1)) {
                 dp[l1][r1][l2] = 1;
                 break;
             }
@@ -191,12 +188,10 @@ int ways1(vector<string> &pizza, int k) {
                 if (dp[i][j][p]) {
                     for (int ii = i + 1; ii <= rows; ii++)
                         if (cnt[ii][j] - cnt[i][j] > 0)
-                            dp[ii][j][p + 1] =
-                                (dp[ii][j][p + 1] + dp[i][j][p]) % mod;
+                            dp[ii][j][p + 1] = (dp[ii][j][p + 1] + dp[i][j][p]) % mod;
                     for (int jj = j + 1; jj <= cols; jj++)
                         if (cnt[i][jj] - cnt[i][j] > 0)
-                            dp[i][jj][p + 1] =
-                                (dp[i][jj][p + 1] + dp[i][j][p]) % mod;
+                            dp[i][jj][p + 1] = (dp[i][jj][p + 1] + dp[i][j][p]) % mod;
                 }
     return dp[rows][cols][k];
 }

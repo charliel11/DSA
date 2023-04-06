@@ -8,7 +8,7 @@
 
 using namespace std;
 
-static const std::string DATAPATH = "D:/0plusz/DSA/test/data/";
+static const std::string DATAPATH = "D:/project/DSA/test/data/";
 static const std::string EXT = ".txt";
 
 using VIntInt = tuple<vector<int32_t>, int32_t>;
@@ -31,25 +31,49 @@ void parse(std::string &data_text, std::vector<IntVVIntInt> &res);
 void parse(std::string &data_text, std::vector<VIntVIntIntVInt> &res);
 void parse(std::string &data_text, std::vector<VIntVIntIntInt> &res);
 
-template <typename T> vector<T> parse(std::string &data_text, T para) {
+/*
+[1,2,3,4,5,6]
+*/
+void read(string &text, vector<int32_t> &res);
+/*
+[[1,2,3],[4,5,6]]
+*/
+void read(string &text, vector<vector<int32_t>> &res);
+/*
+["123", "345"]
+*/
+void read(string &text, vector<string> &res);
+void read(string &text, string &res);
+void read(string &text, int32_t &res);
+void read(string &text, int64_t &res);
+void read(string &text, bool &res);
+
+template <typename T> void printElem(T &x, stringstream &ss) {
+    string s;
+    getline(ss, s);
+    read(s, x);
+};
+
+template <typename TupleT, std::size_t... Is>
+void printTupleManual(TupleT &tp, std::index_sequence<Is...>, stringstream &ss) {
+    (printElem(std::get<Is>(tp), ss), ...);
+};
+
+template <typename T> vector<T> parse(std::string &data_text) {
     stringstream ss(data_text);
-    constexpr size_t n = std::tuple_size<T>{};
     vector<T> res;
-    while (ss) {
+    constexpr size_t n = tuple_size_v<T>;
+    while (ss.peek() != -1) {
         res.push_back({});
-        for (size_t i = 0; i < n; ++i) {
-            string s;
-            getline(ss, s);
-            read(s, get<i>(res.back()));
-        }
+        printTupleManual(res.back(), std::make_index_sequence<n>{}, ss);
     }
     return res;
-}
+};
 
 template <typename Sig> struct signature;
 
 template <typename R, typename... Args> struct signature<R(Args...)> {
-    using type = std::tuple<decay<Args...>>;
+    using type = std::tuple<decay_t<Args>..., decay_t<R>>;
 };
 
 template <typename F> auto arguments(const F &) -> typename signature<F>::type;

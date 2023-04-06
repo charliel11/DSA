@@ -51,6 +51,8 @@ void read(string &text, vector<string> &res) {
 
 void read(string &text, int32_t &res) { res = stoi(text); }
 void read(string &text, int64_t &res) { res = stoll(text); }
+void read(string &text, string &res) { res = text; }
+void read(string &text, bool &res) { res = text == "true" ? true : false; }
 
 void parse(std::string &data_text, std::vector<VIntInt> &res) {
     stringstream ss(data_text);

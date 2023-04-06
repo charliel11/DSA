@@ -1,10 +1,12 @@
 #pragma once
 
-#include <vector>
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 using namespace std;
+
+namespace bs {
 
 /*
 https://leetcode.com/problems/binary-search/
@@ -38,7 +40,8 @@ int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums, int32_t target) {
 /*
 https://leetcode.com/problems/successful-pairs-of-spells-and-potions/
 */
-vector<int32_t> successfulPairs(vector<int32_t> &spells, vector<int32_t> &potions, int64_t success) {
+vector<int32_t> successfulPairs(vector<int32_t> &spells, vector<int32_t> &potions,
+                                int64_t success) {
     size_t n = spells.size();
     size_t m = potions.size();
     sort(begin(potions), end(potions));
@@ -58,3 +61,4 @@ vector<int32_t> successfulPairs(vector<int32_t> &spells, vector<int32_t> &potion
     }
     return res;
 }
+} // namespace bs

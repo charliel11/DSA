@@ -1,5 +1,5 @@
-#include <parse.h>
 #include <Node.h>
+#include <parse.h>
 
 /*
 [[2,4],[1,3],[2,4],[1,3]]
