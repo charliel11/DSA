@@ -1,8 +1,9 @@
-#include <parse.h>
 #include <Graph.h>
+#include <parse.h>
 
 TEST(GRAPH, minScore) {
-    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
     std::string data_text = readtxt(DATAPATH + test_name + EXT);
 
     vector<IntVVIntInt> cases;
@@ -13,7 +14,8 @@ TEST(GRAPH, minScore) {
 }
 
 TEST(GRAPH, makeConnected) {
-    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
     std::string data_text = readtxt(DATAPATH + test_name + EXT);
 
     vector<IntVVIntInt> cases;
@@ -24,7 +26,8 @@ TEST(GRAPH, makeConnected) {
 }
 
 TEST(GRAPH, countPairs) {
-    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
     std::string data_text = readtxt(DATAPATH + test_name + EXT);
 
     vector<IntVVIntInt> cases;
@@ -35,12 +38,25 @@ TEST(GRAPH, countPairs) {
 }
 
 TEST(GRAPH, longestCycle) {
-    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
     std::string data_text = readtxt(DATAPATH + test_name + EXT);
 
     vector<VIntInt> cases;
     parse(data_text, cases);
     for (auto &c : cases) {
         ASSERT_EQ(longestCycle(get<0>(c)), get<1>(c));
+    }
+}
+
+TEST(GRAPH, closedIsland) {
+    std::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+
+    vector<VVIntInt> cases;
+    parse(data_text, cases);
+    for (auto &c : cases) {
+        ASSERT_EQ(closedIsland(get<0>(c)), get<1>(c));
     }
 }

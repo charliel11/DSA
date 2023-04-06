@@ -1,9 +1,10 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <algorithm>
 #include <math.h>
+#include <queue>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -82,6 +83,7 @@ int32_t partitionString(string s) {
         }
         hash |= (1 << shift);
     }
+
     return res;
 }
 
@@ -98,4 +100,57 @@ int32_t minimizeArrayValue(vector<int32_t> &nums) {
         res = max(res, (prefix_sum + i) / (i + 1));
     }
     return res;
+}
+
+/*
+https://leetcode.com/problems/convert-an-array-into-a-2d-array-with-conditions/
+
+NOTE: 895. Maximum Frequency Stack
+*/
+vector<vector<int32_t>> findMatrix(vector<int32_t> &nums) {
+    int32_t idx[201]{0};
+    vector<vector<int32_t>> res{1, vector<int32_t>()};
+
+    for (int32_t &num : nums) {
+        if (res.size() - 1 < idx[num])
+            res.push_back({});
+        res[idx[num]].emplace_back(num);
+        ++idx[num];
+    }
+    return res;
+}
+
+/*
+https://leetcode.com/problems/mice-and-cheese/
+
+*/
+int32_t miceAndCheese(vector<int32_t> &reward1, vector<int32_t> &reward2, int32_t k) {
+    size_t n = reward1.size();
+    vector<int32_t> diff(n);
+    for (size_t i = 0; i < n; ++i)
+        diff[i] = reward2[i] - reward1[i];
+
+    auto comp = [&](size_t i, size_t j) { return diff[i] < diff[j]; };
+    priority_queue<int32_t, vector<int32_t>, decltype(comp)> pq(comp);
+    int32_t i = 0;
+    int32_t mouse1 = 0;
+    for (; i < k; ++i) {
+        mouse1 += reward1[i];
+        pq.push(i);
+    }
+    int32_t mouse2 = 0;
+    for (; i < n; ++i) {
+        if (!pq.empty() && diff[i] < diff[pq.top()]) {
+            int32_t t = pq.top();
+            pq.pop();
+            pq.push(i);
+            mouse1 -= reward1[t];
+            mouse1 += reward1[i];
+            mouse2 += reward2[t];
+        } else {
+            mouse2 += reward2[i];
+        }
+    }
+
+    return mouse1 + mouse2;
 }

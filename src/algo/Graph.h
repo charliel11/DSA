@@ -1,8 +1,8 @@
-#ifndef __GRAPH_H__
-#define __GRAPH_H__
+#pragma once
 
-#include <vector>
+#include <Utility.h>
 #include <queue>
+#include <vector>
 
 #include "UnionFind.h"
 
@@ -12,7 +12,8 @@ using namespace std;
 https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/
 
 Precondition: Node 1 and Node n on the same connected component
-Getting minimal weighted edge within connected component that includes Node 1 and Node n
+Getting minimal weighted edge within connected component that includes Node 1
+and Node n
 */
 int32_t minScore(int32_t n, vector<vector<int32_t>> &roads) {
     UnionFind uf(n + 1);
@@ -60,7 +61,8 @@ int32_t minScore(int32_t n, vector<vector<int32_t>> &roads) {
 https://leetcode.com/problems/number-of-operations-to-make-network-connected/
 
 * One needs at least N-1 edges to connect N nodes in a connected component
-* In a connected component of a graph, if the number of edges exceeds the number of nodes, then the component necessarily contains redundant edges
+* In a connected component of a graph, if the number of edges exceeds the number
+of nodes, then the component necessarily contains redundant edges
 */
 int32_t makeConnected(int32_t n, vector<vector<int32_t>> &connections) {
     if (connections.size() < n - 1)
@@ -82,9 +84,7 @@ int32_t makeConnected(int32_t n, vector<vector<int32_t>> &connections) {
 /*
 https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/
 */
-int32_t minReorder(int32_t n, vector<vector<int32_t>> &connections) {
-    return 0;
-}
+int32_t minReorder(int32_t n, vector<vector<int32_t>> &connections) { return 0; }
 
 /*
 https://leetcode.com/problems/count-unreachable-pairs-of-nodes-in-an-undirected-graph/
@@ -194,4 +194,44 @@ int32_t longestCycle_(vector<int32_t> &edges) {
     return ans;
 }
 
-#endif
+/*
+https://leetcode.com/problems/number-of-closed-islands/description/
+
+NOTE: early return
+
+return dfs(dfs, r - 1, c) && dfs(dfs, r, c - 1) && dfs(dfs, r + 1, c) &&
+dfs(dfs, r, c + 1);
+
+bool d1 = dfs(dfs, r - 1, c);
+bool d2 = dfs(dfs, r, c - 1);
+bool d3 = dfs(dfs, r + 1, c);
+bool d4 = dfs(dfs, r, c + 1);
+return d1 && d2 && d3 && d4;
+*/
+int32_t closedIsland(vector<vector<int32_t>> &grid) {
+    size_t row = grid.size();
+    size_t col = grid[0].size();
+    int32_t res = 0;
+    auto dfs = [&](const auto &dfs, size_t r, size_t c) -> bool {
+        if ((r == 0 || c == 0 || r == row - 1 || c == col - 1) && grid[r][c] == 0)
+            return false;
+        if (grid[r][c] == 1 || grid[r][c] == 2)
+            return true;
+
+        grid[r][c] = 2;
+        bool d1 = dfs(dfs, r - 1, c);
+        bool d2 = dfs(dfs, r, c - 1);
+        bool d3 = dfs(dfs, r + 1, c);
+        bool d4 = dfs(dfs, r, c + 1);
+        return d1 && d2 && d3 && d4;
+    };
+    for (size_t r = 1; r < row - 1; ++r) {
+        for (size_t c = 1; c < col - 1; ++c) {
+            if (grid[r][c] == 0) {
+                if (dfs(dfs, r, c))
+                    ++res;
+            }
+        }
+    }
+    return res;
+}

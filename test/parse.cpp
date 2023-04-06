@@ -1,5 +1,5 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 #include <parse.h>
@@ -49,6 +49,9 @@ void read(string &text, vector<string> &res) {
         res.push_back(text);
 }
 
+void read(string &text, int32_t &res) { res = stoi(text); }
+void read(string &text, int64_t &res) { res = stoll(text); }
+
 void parse(std::string &data_text, std::vector<VIntInt> &res) {
     stringstream ss(data_text);
     string v, a;
@@ -93,6 +96,17 @@ void parse(std::string &data_text, std::vector<StrStrBool> &res) {
     }
 }
 
+void parse(std::string &data_text, std::vector<StrInt> &res) {
+    stringstream ss(data_text);
+    string s, a;
+    while (getline(ss, s) && getline(ss, a)) {
+        if (s[0] == '"')
+            res.push_back({s.substr(1, s.size() - 2), stoi(a)});
+        else
+            res.push_back({s, stoi(a)});
+    }
+}
+
 void parse(std::string &data_text, std::vector<IntVVIntInt> &res) {
     stringstream ss(data_text);
     string i, v, a;
@@ -110,6 +124,18 @@ void parse(std::string &data_text, std::vector<VIntVIntIntVInt> &res) {
         read(v1, get<0>(res.back()));
         read(v2, get<1>(res.back()));
         read(v3, get<3>(res.back()));
+    }
+}
+
+void parse(std::string &data_text, std::vector<VIntVIntIntInt> &res) {
+    stringstream ss(data_text);
+    string v1, v2, i1, i2;
+    while (getline(ss, v1) && getline(ss, v2) && getline(ss, i1) && getline(ss, i2)) {
+        res.push_back({});
+        read(v1, get<0>(res.back()));
+        read(v2, get<1>(res.back()));
+        read(i1, get<2>(res.back()));
+        read(i2, get<3>(res.back()));
     }
 }
 
