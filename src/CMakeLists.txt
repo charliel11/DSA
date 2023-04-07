@@ -5,10 +5,12 @@ project(DSA LANGUAGES C CXX)
 add_subdirectory(algo)
 add_subdirectory(ds)
 
-add_library(${PROJECT_NAME} INTERFACE)
+file(GLOB_RECURSE files CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR} *.cpp *.h)
+
+add_library(${PROJECT_NAME} ${files})
 target_include_directories(${PROJECT_NAME}
-    INTERFACE
+    PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/algo
-    INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/ds
+    .
 )

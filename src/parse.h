@@ -1,15 +1,11 @@
 #pragma once
 
 #include <algorithm>
-#include <gtest/gtest.h>
 #include <string>
 #include <tuple>
 #include <vector>
 
 using namespace std;
-
-static const std::string DATAPATH = "D:/project/DSA/test/data/";
-static const std::string EXT = ".txt";
 
 using VIntInt = tuple<vector<int32_t>, int32_t>;
 using VIntVIntIntVInt = tuple<vector<int32_t>, vector<int32_t>, int64_t, vector<int32_t>>;

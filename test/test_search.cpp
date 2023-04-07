@@ -1,5 +1,5 @@
 #include <BinarySearch.h>
-#include <parse.h>
+#include <config.h>
 
 TEST(BINARYSEARCH, search) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();

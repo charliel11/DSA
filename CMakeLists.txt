@@ -23,16 +23,10 @@ if(WIN32)
     add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
 endif()
 
-# enable_testing()
-# find_package(Threads REQUIRED)
 add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(external/googletest)
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} PUBLIC DSA)
-
-# target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
-
-# include(GoogleTest)
-# gtest_discover_tests(LeetCode)
+target_link_libraries(${PROJECT_NAME} PRIVATE DSA)
+target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECTDIR="${PROJECT_SOURCE_DIR}")

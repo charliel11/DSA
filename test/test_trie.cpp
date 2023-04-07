@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include <Trie.h>
+#include <config.h>
 
 TEST(TRIE, insert) {
     Trie trie;

@@ -1,5 +1,5 @@
 #include <Count.h>
-#include <parse.h>
+#include <config.h>
 
 TEST(Count, zeroFilledSubarray) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();

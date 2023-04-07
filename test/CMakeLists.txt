@@ -13,3 +13,4 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
     gtest_main
 )
+target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECTDIR="${PROJECT_SOURCE_DIR}")
