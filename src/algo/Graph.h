@@ -241,3 +241,90 @@ int32_t closedIsland(vector<vector<int32_t>> &grid) {
     }
     return res;
 }
+
+/* 207.Course Schedule
+https://leetcode.com/problems/course-schedule/
+prerequisites[i] = [ai, bi] : bi -> ai
+acyclic (no cycle) -> exists
+O(V+E)
+ref. https://www.scaler.com/topics/data-structures/topological-sort-algorithm/
+*/
+
+bool canFinish(int numCourses, vector<vector<int>> &prerequisites) {
+
+    // * Create graph
+    vector<vector<int>> graph(numCourses);
+    for (auto &edge : prerequisites)
+        graph[edge[1]].push_back(edge[0]);
+
+    // The process after this point has already been traversed (acyclic)
+    vector<uint8_t> done(numCourses, 0); // vector<bool> C++17 以下要小心
+    vector<uint8_t> visit(numCourses, 0);
+
+    // * Acyclic
+    auto isAcyclic = [](const auto &isAcyclic, vector<vector<int>> &graph, vector<uint8_t> &visit,
+                        vector<uint8_t> &done, int node) {
+        // 3 cases :
+        // 1 . form a cycle
+        if (visit[node])
+            return 0;
+        // 2. the process after this point has already been traversed
+        if (done[node])
+            return 1;
+        // 3. not yet finished traversing
+        done[node] = visit[node] = 1;
+        for (auto child : graph[node]) {
+            if (!isAcyclic(isAcyclic, graph, visit, done, child))
+                return 0;
+        }
+        visit[node] = 0;
+        return 1;
+    };
+
+    for (size_t i = 0; i < numCourses; ++i) {
+        if (!done[i] && !isAcyclic(isAcyclic, graph, visit, done, i)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+/* 210. Course Schedule II
+https://leetcode.com/problems/course-schedule-ii/
+O(V+E)
+*/
+vector<int> findOrder(int numCourses, vector<vector<int>> &prerequisites) {
+    vector<int> out;
+    // * Create graph
+    vector<vector<int>> graph(numCourses);
+    for (auto &edge : prerequisites)
+        graph[edge[1]].push_back(edge[0]);
+
+    vector<uint8_t> done(numCourses, 0); // vector<bool> C++17 以下要小心
+    vector<uint8_t> visit(numCourses, 0);
+
+    // * Acyclic
+    auto isAcyclic = [&](const auto &isAcyclic, int node) {
+        if (visit[node])
+            return 0;
+        if (done[node])
+            return 1;
+
+        done[node] = visit[node] = 1;
+        for (auto neighbor : graph[node]) {
+            if (!isAcyclic(isAcyclic, neighbor))
+                return 0;
+        }
+        out.push_back(node);
+        visit[node] = 0;
+        return 1;
+    };
+
+    for (size_t i = 0; i < numCourses; ++i) {
+        if (!done[i] && !isAcyclic(isAcyclic, i)) {
+            return {};
+        }
+    }
+    reverse(out.begin(), out.end());
+    return out;
+}
