@@ -1,7 +1,7 @@
 #include <Utility.h>
 #include <parse.h>
 
-#define TARGET numEnclaves
+#define TARGET minReverseOperations
 
 /*
 https://leetcode.com/problems/number-of-enclaves/
