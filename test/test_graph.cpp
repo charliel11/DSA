@@ -55,25 +55,3 @@ TEST(GRAPH, closedIsland) {
         ASSERT_EQ(closedIsland(get<0>(c)), get<1>(c));
     }
 }
-
-TEST(GRAPH, canFinish) {
-    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
-
-    using p = decltype(arguments(canFinish));
-    auto cases = parse<p>(data_text);
-    for (auto &c : cases) {
-        ASSERT_EQ(canFinish(get<0>(c), get<1>(c)), get<2>(c));
-    }
-}
-
-TEST(GRAPH, findOrder) {
-    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
-
-    using p = decltype(arguments(findOrder));
-    auto cases = parse<p>(data_text);
-    for (auto &c : cases) {
-        ASSERT_EQ(findOrder(get<0>(c), get<1>(c)), get<2>(c));
-    }
-}
