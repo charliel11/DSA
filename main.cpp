@@ -1,7 +1,65 @@
 #include <Utility.h>
+#include <functional>
 #include <parse.h>
 
-#define TARGET minReverseOperations
+#define TARGET largestPathValue
+
+/*
+https://leetcode.com/problems/largest-color-value-in-a-directed-graph/
+
+RECAP:
+*/
+int32_t largestPathValue(string colors, vector<vector<int32_t>> &edges) {
+    size_t n = colors.size();
+    vector<vector<int32_t>> adj_list(n);
+    vector<int32_t> in_degree(n, 0);
+    vector<int8_t> visited(n, 0);
+    vector<int8_t> done(n, 0);
+    vector<vector<int32_t>> cnt(n, vector<int32_t>(26, 0));
+
+    for (auto &e : edges) {
+        ++in_degree[e[1]];
+        adj_list[e[0]].push_back(e[1]);
+    }
+    int32_t res = -1;
+    bool is_cycle = false;
+
+    auto dfs = [&](const auto &dfs, int32_t i) -> void {
+        if (is_cycle)
+            return;
+        if (done[i] == 1) {
+            return;
+        }
+        done[i] = 1;
+        visited[i] = 1;
+        for (auto &next : adj_list[i]) {
+            if (visited[next] == 0) {
+                dfs(dfs, next);
+            } else {
+                is_cycle = true;
+                return;
+            }
+            for (int j = 0; j < 26; ++j)
+                cnt[i][j] = max(cnt[i][j], cnt[next][j]);
+        }
+        ++cnt[i][colors[i] - 'a'];
+        visited[i] = 0;
+        return;
+    };
+
+    for (size_t i = 0; i < n; ++i) {
+        dfs(dfs, i);
+        if (is_cycle)
+            return -1;
+    }
+
+    for (size_t i = 0; i < n; ++i) {
+        if (in_degree[i] == 0) {
+            res = max(res, *max_element(begin(cnt[i]), end(cnt[i])));
+        }
+    }
+    return res;
+}
 
 /*
 https://leetcode.com/problems/number-of-enclaves/
@@ -44,6 +102,8 @@ vector<int32_t> minReverseOperations(int32_t n, int32_t p, vector<int32_t> &bann
     vector<int32_t> res{0};
     return res;
 }
+
+/*------------------------------------------------------*/
 
 #define str(x) #x
 #define NAME(x) str(x)

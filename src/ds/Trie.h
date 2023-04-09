@@ -1,8 +1,8 @@
 #ifndef __TRIE_H__
 #define __TRIE_H__
 
-#include <string>
 #include <Utility.h>
+#include <string>
 
 using namespace std;
 
@@ -40,10 +40,8 @@ class Trie {
         cur = nullptr;
     }
 
-public:
-    Trie() {
-        _root = new TrieNode();
-    }
+  public:
+    Trie() { _root = new TrieNode(); }
     ~Trie() {
         // delete TrieNode
         if (_root != nullptr)

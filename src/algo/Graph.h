@@ -4,7 +4,9 @@
 #include <queue>
 #include <vector>
 
-#include "UnionFind.h"
+#include <UnionFind.h>
+
+#include <Utility.h>
 
 using namespace std;
 
@@ -121,6 +123,10 @@ int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges) {
 
 /*
 https://leetcode.com/problems/longest-cycle-in-a-graph/
+
+BFS detect cycle
+
+RECAP:
 */
 int32_t longestCycle(vector<int32_t> &edges) {
     int32_t n = edges.size();
@@ -211,13 +217,13 @@ return d1 && d2 && d3 && d4;
 int32_t closedIsland(vector<vector<int32_t>> &grid) {
     size_t row = grid.size();
     size_t col = grid[0].size();
+
     int32_t res = 0;
     auto dfs = [&](const auto &dfs, size_t r, size_t c) -> bool {
         if ((r == 0 || c == 0 || r == row - 1 || c == col - 1) && grid[r][c] == 0)
             return false;
         if (grid[r][c] == 1 || grid[r][c] == 2)
             return true;
-
         grid[r][c] = 2;
         bool d1 = dfs(dfs, r - 1, c);
         bool d2 = dfs(dfs, r, c - 1);
