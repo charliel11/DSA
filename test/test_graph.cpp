@@ -77,3 +77,14 @@ TEST(GRAPH, findOrder) {
         ASSERT_EQ(findOrder(get<0>(c), get<1>(c)), get<2>(c));
     }
 }
+
+TEST(GRAPH, largestPathValue) {
+    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+
+    using p = decltype(arguments(largestPathValue));
+    auto cases = parse<p>(data_text);
+    for (auto &c : cases) {
+        ASSERT_EQ(largestPathValue(get<0>(c), get<1>(c)), get<2>(c));
+    }
+}

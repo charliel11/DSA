@@ -122,6 +122,45 @@ int64_t countPairs(int32_t n, vector<vector<int32_t>> &edges) {
 }
 
 /*
+https://johannesugb.github.io/cpu-programming/how-to-pass-lambda-functions-in-C++/
+*/
+template <typename Func1, typename Func2>
+bool graph_dfs_acyclic(vector<vector<int32_t>> &graph, const Func1 &merge, const Func2 &update) {
+    int32_t n = graph.size();
+    vector<int8_t> visit(n, 0);
+    vector<int8_t> done(n, 0);
+    bool acyclic = true;
+
+    auto dfs = [&](const auto &dfs, int32_t i) -> bool {
+        if (!acyclic)
+            return acyclic;
+        if (done[i] == 1)
+            return true;
+        done[i] = visit[i] = 1;
+        for (int32_t next : graph[i]) {
+            if (visit[next] == 1 || !dfs(dfs, next)) {
+                return acyclic = false;
+            }
+            merge(i, next);
+        }
+        update(i);
+        visit[i] = 0;
+        return acyclic;
+    };
+
+    for (int32_t i = 0; i < n; ++i) {
+        if (!done[i] && !dfs(dfs, i))
+            return false;
+    }
+
+    return true;
+}
+
+/*
+TODO: graph_bfs_XXX
+*/
+
+/*
 https://leetcode.com/problems/longest-cycle-in-a-graph/
 
 BFS detect cycle
@@ -242,6 +281,39 @@ int32_t closedIsland(vector<vector<int32_t>> &grid) {
     return res;
 }
 
+/*
+https://leetcode.com/problems/largest-color-value-in-a-directed-graph/
+
+RECAP:
+*/
+int32_t largestPathValue(string colors, vector<vector<int32_t>> &edges) {
+    size_t n = colors.size();
+    vector<vector<int32_t>> adj_list(n);
+    vector<int32_t> in_degree(n, 0);
+    vector<vector<int32_t>> cnt(n, vector<int32_t>(26, 0));
+
+    for (auto &e : edges) {
+        ++in_degree[e[1]];
+        adj_list[e[0]].push_back(e[1]);
+    }
+
+    auto merge = [&](int32_t i, int32_t next) {
+        for (int j = 0; j < 26; ++j)
+            cnt[i][j] = max(cnt[i][j], cnt[next][j]);
+    };
+    auto update = [&](int32_t i) { ++cnt[i][colors[i] - 'a']; };
+    if (!graph_dfs_acyclic(adj_list, merge, update))
+        return -1;
+
+    int32_t res = -1;
+    for (size_t i = 0; i < n; ++i) {
+        if (in_degree[i] == 0) {
+            res = max(res, *max_element(begin(cnt[i]), end(cnt[i])));
+        }
+    }
+    return res;
+}
+
 /* 207.Course Schedule
 https://leetcode.com/problems/course-schedule/
 prerequisites[i] = [ai, bi] : bi -> ai
@@ -249,7 +321,6 @@ acyclic (no cycle) -> exists
 O(V+E)
 ref. https://www.scaler.com/topics/data-structures/topological-sort-algorithm/
 */
-
 bool canFinish(int numCourses, vector<vector<int>> &prerequisites) {
 
     // * Create graph
@@ -257,36 +328,9 @@ bool canFinish(int numCourses, vector<vector<int>> &prerequisites) {
     for (auto &edge : prerequisites)
         graph[edge[1]].push_back(edge[0]);
 
-    // The process after this point has already been traversed (acyclic)
-    vector<uint8_t> done(numCourses, 0); // vector<bool> C++17 以下要小心
-    vector<uint8_t> visit(numCourses, 0);
-
-    // * Acyclic
-    auto isAcyclic = [](const auto &isAcyclic, vector<vector<int>> &graph, vector<uint8_t> &visit,
-                        vector<uint8_t> &done, int node) {
-        // 3 cases :
-        // 1 . form a cycle
-        if (visit[node])
-            return 0;
-        // 2. the process after this point has already been traversed
-        if (done[node])
-            return 1;
-        // 3. not yet finished traversing
-        done[node] = visit[node] = 1;
-        for (auto child : graph[node]) {
-            if (!isAcyclic(isAcyclic, graph, visit, done, child))
-                return 0;
-        }
-        visit[node] = 0;
-        return 1;
-    };
-
-    for (size_t i = 0; i < numCourses; ++i) {
-        if (!done[i] && !isAcyclic(isAcyclic, graph, visit, done, i)) {
-            return 0;
-        }
-    }
-    return 1;
+    auto merge = [&](int32_t i, int32_t next) {};
+    auto update = [&](int32_t i) {};
+    return graph_dfs_acyclic(graph, merge, update);
 }
 
 /* 210. Course Schedule II
@@ -300,31 +344,9 @@ vector<int> findOrder(int numCourses, vector<vector<int>> &prerequisites) {
     for (auto &edge : prerequisites)
         graph[edge[1]].push_back(edge[0]);
 
-    vector<uint8_t> done(numCourses, 0); // vector<bool> C++17 以下要小心
-    vector<uint8_t> visit(numCourses, 0);
-
-    // * Acyclic
-    auto isAcyclic = [&](const auto &isAcyclic, int node) {
-        if (visit[node])
-            return 0;
-        if (done[node])
-            return 1;
-
-        done[node] = visit[node] = 1;
-        for (auto neighbor : graph[node]) {
-            if (!isAcyclic(isAcyclic, neighbor))
-                return 0;
-        }
-        out.push_back(node);
-        visit[node] = 0;
-        return 1;
-    };
-
-    for (size_t i = 0; i < numCourses; ++i) {
-        if (!done[i] && !isAcyclic(isAcyclic, i)) {
-            return {};
-        }
-    }
+    auto merge = [&](int32_t i, int32_t next) {};
+    auto update = [&](int32_t i) { out.push_back(i); };
+    graph_dfs_acyclic(graph, merge, update);
     reverse(out.begin(), out.end());
     return out;
 }
