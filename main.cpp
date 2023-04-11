@@ -2,7 +2,23 @@
 #include <functional>
 #include <parse.h>
 
-#define TARGET numEnclaves
+#define TARGET removeStars
+
+/*
+https://leetcode.com/problems/removing-stars-from-a-string/description/
+*/
+string removeStars(string s) {
+    string res;
+    res.reserve(s.size());
+    for (char &c : s) {
+        if (c != '*') {
+            res.push_back(c);
+        } else {
+            res.pop_back();
+        }
+    }
+    return res;
+}
 
 /*
 https://leetcode.com/problems/number-of-enclaves/
