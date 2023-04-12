@@ -52,9 +52,9 @@ dp[0] <=  {[1]}
 dp[1] <=  {[1][2],                [1,2]}
 dp[2] <=  {[1][2][1], [1][2,1]}, {[1,2][1], [1,2,1]}
 
-* if cost([1][2]) < cost([1,2]), then cost([1][2][1]) < cost([1,2][1])
-* but cost([1][2,1]) < cost([1,2,1]) do not sure
-*
+* If the cost of selecting elements [1][2] is less than the cost of selecting elements [1,2], then it follows that the cost of selecting elements [1][2][1] is less than the cost of selecting elements [1,2][1].
+
+* However, we cannot ascertain whether the cost of selecting elements [1][2,1] is less than the cost of selecting elements [1,2,1]. Thus, demonstrating that it cannot be solved using a linear dynamic programming approach.
 
 */
 int32_t minCost(vector<int32_t> &nums, int32_t k) {

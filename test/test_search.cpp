@@ -1,6 +1,8 @@
 #include <BinarySearch.h>
 #include <config.h>
 
+using namespace bs;
+
 TEST(BINARYSEARCH, search) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     std::string data_text = readtxt(DATAPATH + test_name + EXT);
@@ -8,12 +10,11 @@ TEST(BINARYSEARCH, search) {
     using p = decltype(arguments(bs::search));
     auto cases = parse<p>(data_text);
     for (auto &c : cases) {
-        ASSERT_EQ(bs::search(get<0>(c), get<1>(c)), get<2>(c));
+        ASSERT_EQ(search(get<0>(c), get<1>(c)), get<2>(c));
     }
 }
 
 TEST(BINARYSEARCH, successfulPairs) {
-    using namespace bs;
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
     std::string data_text = readtxt(DATAPATH + test_name + EXT);
 
