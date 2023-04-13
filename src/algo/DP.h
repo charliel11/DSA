@@ -13,12 +13,15 @@ using namespace std;
 /*
 https://leetcode.com/problems/jump-game-ii/
 */
-int32_t jump(vector<int32_t> &nums) { return 0; }
+inline int32_t jump(vector<int32_t> &nums) {
+    int s = 0;
+    return 0;
+}
 
 /*
 https://leetcode.com/problems/minimum-path-sum/
 */
-int32_t minPathSum(vector<vector<int32_t>> &grid) {
+inline int32_t minPathSum(vector<vector<int32_t>> &grid) {
     int32_t m = grid.size(), n = grid[0].size();
     for (int32_t i = 1; i < n; i++)
         grid[0][i] += grid[0][i - 1];
@@ -26,7 +29,7 @@ int32_t minPathSum(vector<vector<int32_t>> &grid) {
     for (int32_t i = 1; i < m; i++) {
         grid[i][0] += grid[i - 1][0];
         for (int32_t j = 1; j < n; j++) {
-            grid[i][j] += min(grid[i - 1][j], grid[i][j - 1]);
+            grid[i][j] += std::min(grid[i - 1][j], grid[i][j - 1]);
         }
     }
     return grid[m - 1][n - 1];
@@ -35,7 +38,7 @@ int32_t minPathSum(vector<vector<int32_t>> &grid) {
 /*
 https://leetcode.com/problems/minimum-cost-for-tickets/description/
 */
-int32_t mincostTickets(vector<int32_t> &days, vector<int32_t> &costs) {
+inline int32_t mincostTickets(vector<int32_t> &days, vector<int32_t> &costs) {
     int32_t dp[3]{0};
     int32_t n = days.size();
     for (int32_t i = 0; i < n; ++i) {
@@ -57,7 +60,7 @@ dp[2] <=  {[1][2][1], [1][2,1]}, {[1,2][1], [1,2,1]}
 * However, we cannot ascertain whether the cost of selecting elements [1][2,1] is less than the cost of selecting elements [1,2,1]. Thus, demonstrating that it cannot be solved using a linear dynamic programming approach.
 
 */
-int32_t minCost(vector<int32_t> &nums, int32_t k) {
+inline int32_t minCost(vector<int32_t> &nums, int32_t k) {
     int32_t dp[1001]{0};
     int32_t n = nums.size();
 
@@ -76,7 +79,7 @@ int32_t minCost(vector<int32_t> &nums, int32_t k) {
     for (int32_t i = 0; i < n; ++i) {
         dp[i] = trim_table[0][i] + k;
         for (int32_t j = 0; j < i; ++j) {
-            dp[i] = min(dp[i], dp[j] + trim_table[j + 1][i] + k);
+            dp[i] = std::min(dp[i], dp[j] + trim_table[j + 1][i] + k);
         }
     }
     return dp[n - 1];
@@ -86,7 +89,7 @@ int32_t minCost(vector<int32_t> &nums, int32_t k) {
 https://leetcode.com/problems/scramble-string/
 
 */
-bool isScramble(string s1, string s2) {
+inline bool isScramble(string s1, string s2) {
     int32_t n1 = s1.size();
     int8_t dp[31][31][31]{{{0}}};
     auto dfs = [&](auto const &dfs, int32_t l1, int32_t r1, int32_t l2, int32_t r2) -> bool {
@@ -128,7 +131,7 @@ https://leetcode.com/problems/number-of-ways-of-cutting-a-pizza/
 ]
 
 */
-int32_t ways(vector<string> &pizza, int32_t k) {
+inline int32_t ways(vector<string> &pizza, int32_t k) {
     int32_t row = pizza.size(), col = pizza[0].size();
     vector<vector<int32_t>> cnt(row, vector<int32_t>(col, 0));
     for (int32_t r = 0; r < row; ++r) {
@@ -168,7 +171,7 @@ int32_t ways(vector<string> &pizza, int32_t k) {
     return res;
 }
 
-int ways1(vector<string> &pizza, int k) {
+inline int ways1(vector<string> &pizza, int k) {
     const int mod = 1000000000 + 7;
     int rows = pizza.size();
     int cols = pizza[0].size();
@@ -195,4 +198,50 @@ int ways1(vector<string> &pizza, int k) {
                             dp[i][jj][p + 1] = (dp[i][jj][p + 1] + dp[i][j][p]) % mod;
                 }
     return dp[rows][cols][k];
+}
+
+/*
+https://leetcode.com/problems/coin-change/description/
+
+TODO: Unbound knapsack problem
+```
+* 狀態轉移關係圖
+dp[i-1][0] | dp[i-1][1] | ... | dp[i-1][j] | ... | dp[i-1][W]
+                                     |
+                  |------------------|
+dp[i][0]  |  dp[i][1]  | ... |  dp[i][j]  | ... |  dp[i][W]
+```
+
+1. | : 不考慮第i件物品
+2. \- : 考慮第i件物品。因為物品有無限多個，所以此時應該轉移到dp[i][j-w[i]]，及裝入第i種物品還可以繼續裝入第i種物品
+
+* $dp[i][j] = max(dp[i-1][j], dp[i][j-w[i]] + v[i])，j >= w[i]$
+
+    0 | 1 | 2 | 3 | ... | amount
+_   0 | x | x | x | ... | x
+1   0 | 1 | 2 | 3 | ... | amount
+2   0 | 1 | 2 | 1 | 2
+5   x
+
+*/
+inline int32_t coinChange(vector<int32_t> &coins, int32_t amount) {
+    int32_t dp[13][10001]{};
+
+    int32_t n = coins.size();
+
+    dp[0][0] = 0;
+    fill(begin(dp[0]), begin(dp[0]) + amount + 1, INT32_MAX - 1);
+    for (int32_t i = 1; i <= n; ++i) {
+        fill(begin(dp[i]), begin(dp[i]) + amount + 1, INT32_MAX - 1);
+        dp[i][0] = 0;
+        int32_t coin = coins[i - 1];
+        for (int32_t j = 1; j <= amount; ++j) {
+            if (j - coin < 0)
+                dp[i][j] = dp[i - 1][j];
+            else
+                dp[i][j] = min(dp[i - 1][j], dp[i][j - coin] + 1);
+        }
+    }
+
+    return dp[n][amount] == INT32_MAX - 1 ? -1 : dp[n][amount];
 }

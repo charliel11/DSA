@@ -2,10 +2,12 @@ cmake_minimum_required(VERSION 3.25)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # set(CUDA_ARCHITECTURES 86)
 project(LeetCode LANGUAGES C CXX)
 
 find_package(OpenMP REQUIRED)
+
 # message("Your C++ compiler supports these C++ features:")
 
 # foreach(i ${CMAKE_CXX_COMPILE_FEATURES})

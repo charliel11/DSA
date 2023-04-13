@@ -12,7 +12,7 @@ namespace bs {
 /*
 https://leetcode.com/problems/binary-search/
 */
-int32_t search(vector<int32_t> &nums, int32_t target) {
+inline int32_t search(vector<int32_t> &nums, int32_t target) {
     int32_t l = 0, r = nums.size() - 1;
     while (l <= r) {
         int32_t mid = l + (r - l) / 2;
@@ -26,7 +26,7 @@ int32_t search(vector<int32_t> &nums, int32_t target) {
     return -1;
 }
 
-int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums, int32_t target) {
+inline int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums, int32_t target) {
     int32_t left = 0, right = nums.size() - 1;
     while (left < right) {
         int32_t mid = left + (right - left) / 2;
@@ -41,8 +41,8 @@ int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums, int32_t target) {
 /*
 https://leetcode.com/problems/successful-pairs-of-spells-and-potions/
 */
-vector<int32_t> successfulPairs(vector<int32_t> &spells, vector<int32_t> &potions,
-                                int64_t success) {
+inline vector<int32_t> successfulPairs(vector<int32_t> &spells, vector<int32_t> &potions,
+                                       int64_t success) {
     size_t n = spells.size();
     size_t m = potions.size();
     sort(begin(potions), end(potions));
@@ -88,7 +88,7 @@ f(i,p) = min(max(nums[i],f(i+2,p-1)), f(i+1,p))
 * But this problem n*p > 10^9 that cause TLE again.
 
 */
-int32_t minimizeMax(vector<int32_t> &nums, int32_t p) {
+inline int32_t minimizeMax(vector<int32_t> &nums, int32_t p) {
     if (p == 0)
         return 0;
     size_t n = nums.size();

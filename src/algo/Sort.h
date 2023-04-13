@@ -1,18 +1,14 @@
 #pragma once
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 
 /*
 https://leetcode.com/problems/sort-an-array/description/
 */
-vector<int32_t> sortArray(vector<int32_t> &nums) {
-    quicksort(nums, 0, nums.size() - 1);
-    return nums;
-}
-void quicksort(vector<int32_t> &nums, int32_t left, int32_t right) {
+inline void quicksort(vector<int32_t> &nums, int32_t left, int32_t right) {
     if (left >= right)
         return;
 
@@ -24,8 +20,12 @@ void quicksort(vector<int32_t> &nums, int32_t left, int32_t right) {
             ;
         while (l < r && nums[++l] < pivot)
             ;
-        swap(nums[l], nums[r]);
+        std::swap(nums[l], nums[r]);
     }
     quicksort(nums, left, l);
     quicksort(nums, l + 1, right);
+}
+inline vector<int32_t> sortArray(vector<int32_t> &nums) {
+    quicksort(nums, 0, nums.size() - 1);
+    return nums;
 }

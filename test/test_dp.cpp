@@ -44,3 +44,14 @@ TEST(DP, ways) {
         ASSERT_EQ(ways(get<0>(c), get<1>(c)), get<2>(c));
     }
 }
+
+TEST(DP, coinChange) {
+    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+
+    using p = decltype(arguments(coinChange));
+    auto cases = parse<p>(data_text);
+    for (auto &c : cases) {
+        ASSERT_EQ(coinChange(get<0>(c), get<1>(c)), get<2>(c));
+    }
+}

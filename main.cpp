@@ -1,8 +1,10 @@
 #include <Utility.h>
 #include <functional>
 #include <parse.h>
+#include <stdint.h>
+#include <vcruntime.h>
 
-#define TARGET coinChange
+#define TARGET validateStackSequences
 
 /*
 https://leetcode.com/problems/minimum-number-of-visited-cells-in-a-grid/
@@ -10,11 +12,22 @@ https://leetcode.com/problems/minimum-number-of-visited-cells-in-a-grid/
 // int32_t minimumVisitedCells(vector<vector<int32_t>> &grid) {}
 
 /*
-https://leetcode.com/problems/coin-change/description/
-
-TODO: basic knapsack problem
+https://leetcode.com/problems/validate-stack-sequences/description/
 */
-int32_t coinChange(vector<int32_t> &coins, int32_t amount) { return 0; }
+bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
+    deque<int32_t> st;
+
+    size_t i = 0;
+    for (auto &val : pushed) {
+        st.emplace_back(val);
+
+        while (!st.empty() && st.back() == popped[i]) {
+            st.pop_back();
+            ++i;
+        }
+    }
+    return st.empty();
+}
 
 /*
 https://leetcode.com/problems/minimum-reverse-operations/
@@ -38,9 +51,9 @@ template <typename TupleT, std::size_t... Is> auto call(TupleT tup, std::index_s
 
 int main() {
     string target_fun = NAME(TARGET);
-    string data = readtxt(DIR + '/' + target_fun);
+    string data_text = readtxt(DIR + '/' + target_fun);
     using p = decltype(arguments(TARGET));
-    auto cases = parse<p>(data);
+    auto cases = parse<p>(data_text);
     size_t n = cases.size();
     FOR(n) {
         cout << "---Case #" << i << ": ---" << endl;

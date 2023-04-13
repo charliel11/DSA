@@ -14,7 +14,7 @@ count subarray
 2 -> 3 = 2+1
 3 -> 6 = 3+2+1
 */
-int64_t zeroFilledSubarray(vector<int32_t> &nums) {
+inline int64_t zeroFilledSubarray(vector<int32_t> &nums) {
     int64_t res = 0;
     int32_t cur = 1;
     for (uint64_t i = 0; i < nums.size(); ++i) {
@@ -32,7 +32,7 @@ int64_t zeroFilledSubarray(vector<int32_t> &nums) {
 https://leetcode.com/problems/find-the-longest-balanced-substring-of-a-binary-string/
 
 */
-int32_t findTheLongestBalancedSubstring(string s) {
+inline int32_t findTheLongestBalancedSubstring(string s) {
     uint64_t res = 0;
     char check = '0';
     size_t prev_idx = 0, zero_cnt = 0;
@@ -64,7 +64,7 @@ https://leetcode.com/problems/sum-of-distances/
 RECAP: deduction
 
 */
-vector<int64_t> distance(vector<int32_t> &nums) {
+inline vector<int64_t> distance(vector<int32_t> &nums) {
     int32_t n = nums.size();
     unordered_map<int32_t, vector<int32_t>> hash;
 
@@ -87,7 +87,7 @@ https://leetcode.com/problems/prime-in-diagonal/
 RECAP: Prime
 
 */
-int32_t diagonalPrime(vector<vector<int32_t>> &nums) {
+inline int32_t diagonalPrime(vector<vector<int32_t>> &nums) {
     int32_t row = nums.size();
     int32_t col = nums[0].size();
 
