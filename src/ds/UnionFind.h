@@ -4,15 +4,10 @@
 #include "Utility.h"
 
 class UnionFind {
-public:
+  public:
     vector<int32_t> _parent;
-    UnionFind(int32_t n) :
-        _parent(n) {
-        iota(_parent.begin(), _parent.end(), 0);
-    }
-    void insert(int32_t child, int32_t parent) {
-        _parent[child] = parent;
-    }
+    UnionFind(int32_t n) : _parent(n) { iota(_parent.begin(), _parent.end(), 0); }
+    void insert(int32_t child, int32_t parent) { _parent[child] = parent; }
     int32_t find_root(int32_t node) {
         while (_parent[node] != node)
             node = _parent[node];

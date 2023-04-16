@@ -5,14 +5,10 @@
 
 class FenwickTree {
     vector<int> tree;
-    static inline int lowbit(int x) {
-        return x & (-x);
-    }
+    static inline int lowbit(int x) { return x & (-x); }
 
-public:
-    FenwickTree(int n) :
-        tree(n + 1, 0) {
-    }
+  public:
+    FenwickTree(int n) : tree(n + 1, 0) {}
 
     // change idx i value
     void update(int i, int value) {

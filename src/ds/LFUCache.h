@@ -11,10 +11,8 @@ class LFUCache {
     int _size;
     int _minFreq;
 
-public:
-    LFUCache(int capacity) :
-        _capacity(capacity), _size(0), _minFreq(INT_MAX) {
-    }
+  public:
+    LFUCache(int capacity) : _capacity(capacity), _size(0), _minFreq(INT_MAX) {}
     int get(int key) {
         int res = -1;
         if (keyFreqMap.count(key) != 0) {
