@@ -14,7 +14,7 @@ https://leetcode.com/problems/simplify-path/description/
 
 "/home/../foo/" => /foo
 */
-string simplifyPath(string path) {
+inline string simplifyPath(string path) {
     size_t n = path.size();
     deque<string> st;
     string name;
@@ -51,7 +51,7 @@ string simplifyPath(string path) {
 /*
 https://leetcode.com/problems/removing-stars-from-a-string/description/
 */
-string removeStars(string s) {
+inline string removeStars(string s) {
     string res;
     res.reserve(s.size());
     for (char &c : s) {
@@ -67,7 +67,7 @@ string removeStars(string s) {
 /*
 https://leetcode.com/problems/valid-parentheses/description/
 */
-bool isValid(string s) {
+inline bool isValid(string s) {
     unordered_map<char, char> brackets = {{'{', '}'}, {'[', ']'}, {'(', ')'}};
     stack<char> stack;
     for (int i = 0; i < s.size(); i++) {

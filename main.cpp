@@ -1,10 +1,28 @@
+#include <Node.h>
 #include <Utility.h>
 #include <functional>
 #include <parse.h>
 #include <stdint.h>
 #include <vcruntime.h>
 
-#define TARGET numWays
+#define TARGET longestZigZag
+
+int32_t longestZigZag(TreeNode *root) {
+    int32_t res = 0;
+
+    auto dfs = [&](const auto &dfs, TreeNode *node) -> pair<int32_t, int32_t> {
+        if (node == nullptr)
+            return {-1, -1};
+
+        int l = 1 + dfs(dfs, node->left).second;
+        int r = 1 + dfs(dfs, node->right).first;
+        res = std::max(res, std::max(l, r));
+
+        return {l, r};
+    };
+    dfs(dfs, root);
+    return res;
+}
 
 /*
 https://leetcode.com/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/

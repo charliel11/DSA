@@ -1,8 +1,42 @@
+#include "Node.h"
+#include <cstddef>
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <sstream>
 
 #include <parse.h>
+#include <stdint.h>
+#include <string>
+
+/*
+[1,1,1,null,1,null,null,1,1,null,1]
+*/
+void read(string &text, TreeNode *&res) {
+    stringstream ss;
+    replace(text.begin(), text.end(), ',', ' ');
+    text = text.substr(1, text.length() - 2);
+    ss << text;
+
+    queue<TreeNode *> q;
+    ss >> text; // root
+    res = new TreeNode(stoi(text));
+    q.push(res);
+
+    string left, right;
+    while (ss >> left && ss >> right) {
+        TreeNode *cur = q.front();
+        q.pop();
+        if (left != "null") {
+            cur->left = new TreeNode(stoi(left));
+            q.push(cur->left);
+        }
+        if (right != "null") {
+            cur->right = new TreeNode(stoi(right));
+            q.push(cur->right);
+        }
+    }
+}
 
 /*
 [1,2,3,4,5,6]

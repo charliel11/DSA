@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Node.h"
 #include <algorithm>
 #include <sstream>
 #include <string>
@@ -44,6 +45,11 @@ void read(string &text, string &res);
 void read(string &text, int32_t &res);
 void read(string &text, int64_t &res);
 void read(string &text, bool &res);
+
+/*
+[1,1,1,null,1,null,null,1,1,null,1]
+*/
+void read(string &text, TreeNode *&res);
 
 template <typename T> void printElem(T &x, stringstream &ss) {
     string s;
