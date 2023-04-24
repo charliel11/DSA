@@ -1,5 +1,9 @@
 #include <DP.h>
 #include <config.h>
+#include <corecrt_startup.h>
+
+using namespace dp;
+using namespace dp::split_array;
 
 TEST(DP, minCost) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
@@ -9,6 +13,17 @@ TEST(DP, minCost) {
     auto cases = parse<p>(data_text);
     for (auto &c : cases) {
         ASSERT_EQ(minCost(get<0>(c), get<1>(c)), get<2>(c));
+    }
+}
+
+TEST(DP, numberOfArrays) {
+    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+
+    using p = decltype(arguments(numberOfArrays));
+    auto cases = parse<p>(data_text);
+    for (auto &c : cases) {
+        ASSERT_EQ(numberOfArrays(get<0>(c), get<1>(c)), get<2>(c));
     }
 }
 

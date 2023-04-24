@@ -1,12 +1,11 @@
-#ifndef __PREFIXSUM_H__
-#define __PREFIXSUM_H__
+#pragma once
 
 #include <vector>
 
 using namespace std;
 
 class NumMatrix {
-public:
+  public:
     vector<vector<int>> v;
     NumMatrix(vector<vector<int>> &matrix) {
         v = vector<vector<int>>(matrix.size(), vector<int>(matrix[0].size()));
@@ -21,8 +20,8 @@ public:
     }
 
     int sumRegion(int row1, int col1, int row2, int col2) {
-        return v[row2][col2] - (col1 > 0 ? v[row2][col1 - 1] : 0) - (row1 > 0 ? v[row1 - 1][col2] : 0) + (row1 > 0 && col1 > 0 ? v[row1 - 1][col1 - 1] : 0);
+        return v[row2][col2] - (col1 > 0 ? v[row2][col1 - 1] : 0) -
+               (row1 > 0 ? v[row1 - 1][col2] : 0) +
+               (row1 > 0 && col1 > 0 ? v[row1 - 1][col1 - 1] : 0);
     }
 };
-
-#endif

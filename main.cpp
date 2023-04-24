@@ -1,12 +1,105 @@
 #include <Node.h>
 #include <Utility.h>
+#include <cstring>
+#include <deque>
 #include <functional>
+#include <numeric>
 #include <parse.h>
 #include <stdint.h>
 #include <vcruntime.h>
 
-#define TARGET longestZigZag
+#define TARGET minInsertions
 
+/*
+https://leetcode.com/problems/profitable-schemes/
+
+*/
+int32_t profitableSchemes(int32_t n, int32_t minProfit, vector<int32_t> &group,
+                          vector<int32_t> &profit) {
+
+    int32_t pn = profit.size();
+    int32_t res = 0;
+
+    auto dfs = [&](const auto &dfs, int32_t idx, int32_t cur_profit, int32_t cur_n) {
+        if (cur_n < 0)
+            return;
+        if (idx == pn) {
+            if (cur_profit >= minProfit)
+                ++res;
+            return;
+        }
+        dfs(dfs, idx + 1, cur_profit + profit[idx], cur_n - group[idx]);
+        dfs(dfs, idx + 1, cur_profit, cur_n);
+        return;
+    };
+
+    dfs(dfs, 0, 0, n);
+    return res;
+}
+
+/*
+https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
+
+f(0,n)
+* a[0] == a[n] => f(1,n-1),
+* a[0] != a[n] => (f(0,n-1)+1, f(1,n)+1)
+
+*/
+int32_t minInsertions(string s) {
+
+    int32_t n = s.size();
+    int32_t dp[n][n];
+    memset(dp, 0xff, sizeof(dp));
+
+    auto dfs = [&](const auto &dfs, int32_t l, int32_t r) {
+        if (l >= r) {
+            return 0;
+        }
+        if (dp[l][r] != -1)
+            return dp[l][r];
+
+        int32_t res = INT32_MAX;
+        if (s[l] == s[r])
+            res = std::min(res, dfs(dfs, l + 1, r - 1));
+        else {
+            res = std::min(res, dfs(dfs, l + 1, r) + 1);
+            res = std::min(res, dfs(dfs, l, r - 1) + 1);
+        }
+        return dp[l][r] = res;
+    };
+    return dfs(dfs, 0, n - 1);
+}
+/*
+https://leetcode.com/problems/maximum-width-of-binary-tree/
+
+1
+2 3
+4567
+
+*/
+int32_t widthOfBinaryTree(TreeNode *root) {
+    int32_t res = 0;
+    deque<pair<TreeNode *, uint32_t>> q;
+    q.push_back({root, 1});
+    while (!q.empty()) {
+        int32_t level = q.size();
+        int32_t width = q.back().second - q.front().second + 1;
+        res = max(res, width);
+        while (level--) {
+            auto cur = q.front();
+            q.pop_front();
+            if (cur.first->left != nullptr)
+                q.push_back({cur.first->left, cur.second * 2});
+            if (cur.first->right != nullptr)
+                q.push_back({cur.first->right, cur.second * 2 + 1});
+        }
+    }
+    return res;
+}
+
+/*
+https://leetcode.com/problems/longest-zigzag-path-in-a-binary-tree/
+*/
 int32_t longestZigZag(TreeNode *root) {
     int32_t res = 0;
 
@@ -110,6 +203,8 @@ int32_t maxValueOfCoins(vector<vector<int32_t>> &piles, int32_t k) {
 /*
 https://leetcode.com/problems/longest-palindromic-subsequence/
 
+TODO:
+
 b,b,b,a,b
 1,1,1,1,1
 
@@ -134,6 +229,8 @@ https://leetcode.com/problems/minimum-number-of-visited-cells-in-a-grid/
 
 /*
 https://leetcode.com/problems/validate-stack-sequences/description/
+
+TODO:
 */
 bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
     deque<int32_t> st;
@@ -152,6 +249,8 @@ bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
 
 /*
 https://leetcode.com/problems/minimum-reverse-operations/
+
+TODO:
 */
 vector<int32_t> minReverseOperations(int32_t n, int32_t p, vector<int32_t> &banned, int32_t k) {
     vector<int32_t> res{0};

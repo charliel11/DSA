@@ -3,12 +3,16 @@
 #include <algorithm>
 #include <cstring>
 #include <math.h>
+#include <stdint.h>
 #include <string>
+#include <vcruntime.h>
 #include <vector>
 
 #include <PrefixSum.h>
 
 using namespace std;
+
+namespace dp {
 
 /*
 https://leetcode.com/problems/jump-game-ii/
@@ -45,6 +49,8 @@ inline int32_t mincostTickets(vector<int32_t> &days, vector<int32_t> &costs) {
     }
     return 0;
 }
+
+namespace split_array {
 
 /*
 https://leetcode.com/problems/minimum-cost-to-split-an-array/description/
@@ -84,6 +90,38 @@ inline int32_t minCost(vector<int32_t> &nums, int32_t k) {
     }
     return dp[n - 1];
 }
+
+/*
+https://leetcode.com/problems/restore-the-array/
+*/
+inline int32_t numberOfArrays(string s, int32_t k) {
+    int32_t m = 1e9 + 7;
+    size_t n = s.size();
+    int32_t dp[100001]{0};
+
+    auto dfs = [&](const auto &dfs, size_t i) {
+        if (i == n)
+            return 1;
+        if (s[i] == '0')
+            return 0;
+        if (dp[i] != 0)
+            return dp[i];
+
+        int64_t val = 0;
+        int64_t res = 0;
+        for (size_t j = i; j < n; ++j) {
+            val = val * 10 + (s[j] - '0');
+            if (val > k)
+                break;
+            res = (res + dfs(dfs, j + 1)) % m;
+        }
+        return dp[i] = res;
+    };
+
+    return dfs(dfs, 0);
+}
+
+} // namespace split_array
 
 /*
 https://leetcode.com/problems/scramble-string/
@@ -245,3 +283,5 @@ inline int32_t coinChange(vector<int32_t> &coins, int32_t amount) {
 
     return dp[n][amount] == INT32_MAX - 1 ? -1 : dp[n][amount];
 }
+
+} // namespace dp
