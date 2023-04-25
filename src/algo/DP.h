@@ -54,22 +54,11 @@ namespace split_array {
 
 /*
 https://leetcode.com/problems/minimum-cost-to-split-an-array/description/
-
-[1,2,1,2,1]
-
-dp[0] <=  {[1]}
-dp[1] <=  {[1][2],                [1,2]}
-dp[2] <=  {[1][2][1], [1][2,1]}, {[1,2][1], [1,2,1]}
-
-* If the cost of selecting elements [1][2] is less than the cost of selecting elements [1,2], then it follows that the cost of selecting elements [1][2][1] is less than the cost of selecting elements [1,2][1].
-
-* However, we cannot ascertain whether the cost of selecting elements [1][2,1] is less than the cost of selecting elements [1,2,1]. Thus, demonstrating that it cannot be solved using a linear dynamic programming approach.
-
 */
-inline int32_t minCost(vector<int32_t> &nums, int32_t k) {
-    int32_t dp[1001]{0};
-    int32_t n = nums.size();
 
+inline int32_t minCost(vector<int32_t> &nums, int32_t k) {
+    int32_t n = nums.size();
+    int32_t dp[1001]{0};
     vector<vector<int32_t>> trim_table(n, vector<int32_t>(n, 0));
     vector<int32_t> cnt(n, 0);
     for (int32_t i = 0; i < n; ++i) {
@@ -82,13 +71,21 @@ inline int32_t minCost(vector<int32_t> &nums, int32_t k) {
         fill(cnt.begin(), cnt.end(), 0);
     }
 
-    for (int32_t i = 0; i < n; ++i) {
-        dp[i] = trim_table[0][i] + k;
-        for (int32_t j = 0; j < i; ++j) {
-            dp[i] = std::min(dp[i], dp[j] + trim_table[j + 1][i] + k);
+    auto dfs = [&](const auto &dfs, size_t i) {
+        if (i == n)
+            return 0;
+        if (dp[i] != 0)
+            return dp[i];
+
+        int32_t res = INT32_MAX;
+        for (size_t j = i; j < n; ++j) {
+            res = min(res, dfs(dfs, j + 1) + trim_table[i][j] + k);
         }
-    }
-    return dp[n - 1];
+
+        return dp[i] = res;
+    };
+
+    return dfs(dfs, 0);
 }
 
 /*
@@ -262,9 +259,8 @@ _   0 | x | x | x | ... | x
 5   x
 
 */
-inline int32_t coinChange(vector<int32_t> &coins, int32_t amount) {
+inline int32_t coinChange1(vector<int32_t> &coins, int32_t amount) {
     int32_t dp[13][10001]{};
-
     int32_t n = coins.size();
 
     dp[0][0] = 0;
@@ -283,5 +279,53 @@ inline int32_t coinChange(vector<int32_t> &coins, int32_t amount) {
 
     return dp[n][amount] == INT32_MAX - 1 ? -1 : dp[n][amount];
 }
+
+inline int32_t coinChange(vector<int32_t> &coins, int32_t amount) {
+    int32_t dp[13][10001];
+    memset(dp, -1, sizeof(dp));
+    int32_t n = coins.size();
+
+    auto dfs = [&](const auto &dfs, int32_t i, int32_t m) -> int32_t {
+        if (m < 0)
+            return 1e9;
+        if (i == n) {
+            return m == 0 ? 0 : 1e9;
+        }
+        if (dp[i][m] != -1)
+            return dp[i][m];
+        int32_t tmp = dfs(dfs, i + 1, m);
+        int32_t sum = 0;
+        int32_t coin = coins[i];
+        for (int32_t j = 1; sum <= m; ++j) {
+            sum += coin;
+            tmp = std::min(tmp, j + dfs(dfs, i + 1, m - sum));
+        }
+
+        return dp[i][m] = tmp;
+    };
+    int32_t res = dfs(dfs, 0, amount);
+
+    return res >= 1e9 ? -1 : res;
+}
+
+// int dp[10001][12];
+// int helper(vector<int> &coins, int amt, int i) {
+//     if (amt < 0)
+//         return 1e9; // for i>=0
+//     if (amt == 0)
+//         return 0;
+//     if (i < 0)
+//         return 1e9; // amount > or <
+//     if (dp[amt][i] != -1)
+//         return dp[amt][i];
+
+//     return dp[amt][i] = min(helper(coins, amt - coins[i], i) + 1, helper(coins, amt, i - 1));
+// }
+// int coinChange(vector<int> &coins, int amount) {
+//     int n = coins.size();
+//     memset(dp, -1, sizeof dp);
+//     int ans = helper(coins, amount, n - 1);
+//     return ans > 1e4 ? -1 : ans;
+// }
 
 } // namespace dp
