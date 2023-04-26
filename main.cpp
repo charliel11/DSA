@@ -5,6 +5,7 @@
 #include <functional>
 #include <numeric>
 #include <parse.h>
+#include <queue>
 #include <stdint.h>
 #include <vcruntime.h>
 
