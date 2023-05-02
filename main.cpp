@@ -1,5 +1,7 @@
 #include <Node.h>
+#include <UnionFind.h>
 #include <Utility.h>
+#include <algorithm>
 #include <cstring>
 #include <deque>
 #include <functional>
@@ -9,7 +11,44 @@
 #include <stdint.h>
 #include <vcruntime.h>
 
-#define TARGET minInsertions
+#define TARGET numSimilarGroups
+
+/*
+https://leetcode.com/problems/similar-string-groups/
+
+1. similar(X,Y)
+2. build graph
+*/
+int32_t numSimilarGroups(vector<string> &strs) {
+    int16_t n = strs.size();
+    int16_t sn = strs[0].size();
+    vector<vector<int16_t>> edges;
+    for (int16_t i = 0; i < n; ++i) {
+        for (int16_t j = i + 1; j < n; ++j) {
+            int16_t cnt = 0;
+            for (int16_t k = 0; k < sn && cnt < 3; ++k) {
+                if (strs[i][k] != strs[j][k])
+                    ++cnt;
+            }
+            if (cnt == 2 || cnt == 0)
+                edges.push_back({i, j});
+        }
+    }
+    UnionFind uf(n);
+    int32_t n_connected_component = n;
+    for (auto &e : edges) {
+        int32_t r1 = uf.find_root(e[0]);
+        int32_t r2 = uf.find_root(e[1]);
+        if (r1 != r2) {
+            int32_t tmp = std::min(r1, r2);
+            r2 = std::max(r1, r2);
+            r1 = tmp;
+            uf.insert(r2, r1);
+            --n_connected_component;
+        }
+    }
+    return n_connected_component;
+}
 
 /*
 https://leetcode.com/problems/profitable-schemes/
