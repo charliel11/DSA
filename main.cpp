@@ -11,7 +11,45 @@
 #include <stdint.h>
 #include <vcruntime.h>
 
-#define TARGET numSimilarGroups
+#define TARGET distanceLimitedPathsExist
+
+/*
+https://leetcode.com/problems/checking-existence-of-edge-length-limited-paths/
+
+union_find variant
+*/
+vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>> &edgeList,
+                                       vector<vector<int>> &queries) {
+    UnionFind uf(n);
+    sort(edgeList.begin(), edgeList.end(),
+         [](vector<int> &a, vector<int> &b) { return a[2] < b[2]; });
+    size_t qn = queries.size();
+    size_t en = edgeList.size();
+    vector<int32_t> idx(qn);
+    std::iota(idx.begin(), idx.end(), 0);
+    sort(idx.begin(), idx.end(),
+         [&queries](int a, int b) { return queries[a][2] < queries[b][2]; });
+    vector<bool> res(qn);
+
+    int32_t j = 0;
+    for (auto i : idx) {
+        int32_t limit = queries[i][2];
+        for (; j < en && edgeList[j][2] < limit; ++j) {
+            int32_t r1 = uf.find_root(edgeList[j][0]);
+            int32_t r2 = uf.find_root(edgeList[j][1]);
+            if (r1 != r2) {
+                int32_t tmp = std::min(r1, r2);
+                r2 = std::max(r1, r2);
+                r1 = tmp;
+                uf.insert(r2, r1);
+            }
+        }
+        int32_t r1 = uf.find_root(queries[i][0]);
+        int32_t r2 = uf.find_root(queries[i][1]);
+        res[i] = r1 == r2;
+    }
+    return res;
+}
 
 /*
 https://leetcode.com/problems/similar-string-groups/

@@ -93,6 +93,17 @@ void read(string &text, string &res) {
 }
 void read(string &text, bool &res) { res = text == "true" ? true : false; }
 
+// [true, false]
+void read(string &text, vector<bool> &res) {
+    replace(text.begin(), text.end(), ',', ' ');
+    replace(text.begin(), text.end(), '"', ' ');
+    stringstream ss;
+    text = text.substr(1, text.length() - 2);
+    ss << text;
+    while (ss >> text)
+        res.push_back(text == "true" ? true : false);
+}
+
 void parse(std::string &data_text, std::vector<VIntInt> &res) {
     stringstream ss(data_text);
     string v, a;
