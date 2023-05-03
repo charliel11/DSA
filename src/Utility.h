@@ -84,20 +84,24 @@ template <class A> void read(vt<A> &v) {
 
 template <typename T> void print(T &arg) { cout << arg << '\n'; }
 template <typename T> void print(vector<T> &arg) {
-    for (T a : arg)
-        std::cout << a << ',';
-    std::cout << '\n';
+    std::cout << '{';
+    auto it = arg.begin();
+    if (it != arg.end()) {
+        std::cout << *it;
+        for (++it; it != arg.end(); ++it)
+            std::cout << ',' << *it;
+    }
+    std::cout << '}' << '\n';
 }
 template <typename T> void print(vector<vector<T>> &arg) {
+    std::cout << '{' << '\n';
     for (vector<T> &a : arg) {
-        for (T &b : a)
-            std::cout << b << ',';
-        std::cout << '\n';
+        print(a);
     }
-    std::cout << '\n';
+    std::cout << '}' << '\n';
 }
 template <typename T> void print(pair<T, T> &arg) {
-    std::cout << arg.first << ',' << arg.second << '\n';
+    std::cout << '{' << arg.first << ',' << arg.second << '}' << '\n';
 }
 template <typename T, typename... Types> void print(T firstArg, Types... args) {
     print(firstArg); // call print() for the first argument
