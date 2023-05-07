@@ -2,6 +2,7 @@
 #include <UnionFind.h>
 #include <Utility.h>
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <deque>
 #include <functional>
@@ -9,9 +10,58 @@
 #include <parse.h>
 #include <queue>
 #include <stdint.h>
+#ifdef _MSVC
 #include <vcruntime.h>
+#endif
 
-#define TARGET distanceLimitedPathsExist
+#define TARGET numSubseq
+
+/*
+{3,3,6,8}
+
+{3}
+
+{3,3}
+
+{3,6}
+{3,3,6}
+
+{3,8}
+{3,3,8}
+{3,6,8}
+{3,3,6,8}
+
+
+1 => 1
+2 => 2**(2 - 2) = 1
+3 => 2**(3 - 2) = 2
+4 => 2**(4 - 2) = 4
+5 => 2**(5 - 2) = 8
+
+1 => 1, 2 => 2, 3 => 4, 4 => 8, 5 => 16
+*/
+int numSubseq(vector<int> &nums, int target) {
+    int m = 1e9 + 7;
+    size_t n = nums.size();
+    vector<int> pow_table(n, 1);
+    for (int i = 1; i < n; ++i) {
+        pow_table[i] = (pow_table[i - 1] * 2) % m;
+    }
+    sort(begin(nums), end(nums));
+
+    int64_t res = 0;
+    int l = 0, r = n - 1;
+    while (l <= r) {
+        if (nums[l] + nums[r] <= target) {
+            res = (res + pow_table[r - l]) % m;
+            ++l;
+        } else {
+            --r;
+        }
+    }
+
+    return res;
+}
 
 /*
 https://leetcode.com/problems/checking-existence-of-edge-length-limited-paths/

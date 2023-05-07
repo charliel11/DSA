@@ -1,7 +1,6 @@
-#ifndef __UNIONFIND_H__
-#define __UNIONFIND_H__
+#pragma once
 
-#include "Utility.h"
+#include <Utility.h>
 
 class UnionFind {
   public:
@@ -22,5 +21,3 @@ class UnionFind {
         return n1;
     }
 };
-
-#endif
