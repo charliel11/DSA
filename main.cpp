@@ -14,7 +14,30 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET numSubseq
+#define TARGET longestObstacleCourseAtEachPosition
+
+/*
+https://leetcode.com/problems/find-the-longest-valid-obstacle-course-at-each-position/editorial/
+
+LIS -> patient sort + binary search
+
+*/
+vector<int> longestObstacleCourseAtEachPosition(vector<int> &obstacles) {
+    vector<int> stack;
+    int n = obstacles.size();
+    stack.reserve(n);
+    vector<int> res(n);
+
+    for (int i = 0; i < n; ++i) {
+        int idx = upper_bound(stack.begin(), stack.end(), obstacles[i]) - stack.begin();
+        if (idx == stack.size())
+            stack.push_back(obstacles[i]);
+        else
+            stack[idx] = obstacles[i];
+        res[i] = idx + 1;
+    }
+    return res;
+}
 
 /*
 {3,3,6,8}
