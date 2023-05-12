@@ -14,8 +14,74 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET longestObstacleCourseAtEachPosition
+#define TARGET mostPoints
 
+/*
+https://leetcode.com/problems/solving-questions-with-brainpower/
+*/
+uint64_t mostPoints(vector<vector<int>> &questions) {
+    size_t n = questions.size();
+    vector<uint64_t> dp(n, -1);
+
+    auto dfs = [&](const auto &dfs, size_t i) {
+        if (i >= n)
+            return 0ull;
+        if (dp[i] != -1)
+            return dp[i];
+
+        uint64_t res = 0;
+        res += std::max(questions[i][0] + dfs(dfs, i + 1 + questions[i][1]), dfs(dfs, i + 1));
+        return dp[i] = res;
+    };
+    return dfs(dfs, 0);
+}
+
+/*
+https://leetcode.com/problems/uncrossed-lines/
+*/
+int maxUncrossedLines(vector<int> &nums1, vector<int> &nums2) {}
+
+/*
+https://leetcode.com/problems/spiral-matrix/description/
+*/
+vector<int> spiralOrder(vector<vector<int>> &matrix) {
+    vector<vector<int>> m{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int mi = 0;
+    int nr = matrix.size(), nc = matrix[0].size();
+    int r_begin = 0, r_end = nr - 1, c_begin = 0, c_end = nc - 1;
+    int *end[4][2];
+    end[0][0] = &r_begin, end[0][1] = &c_end;
+    end[1][0] = &r_end, end[1][1] = &c_end;
+    end[2][0] = &r_end, end[2][1] = &c_begin;
+    end[3][0] = &r_begin, end[3][1] = &c_begin;
+
+    vector<int> res;
+    res.reserve(nr * nc);
+    int r = 0, c = 0;
+    for (int i = 0; i < nr * nc; ++i) {
+        res.push_back(matrix[r][c]);
+        if (r == *end[mi][0] && c == *end[mi][1]) {
+            switch (mi) {
+            case 0:
+                ++r_begin;
+                break;
+            case 1:
+                --c_end;
+                break;
+            case 2:
+                --r_end;
+                break;
+            case 3:
+                ++c_begin;
+                break;
+            }
+            mi = (mi + 1) % 4;
+        }
+        r += m[mi][0];
+        c += m[mi][1];
+    }
+    return res;
+}
 /*
 https://leetcode.com/problems/find-the-longest-valid-obstacle-course-at-each-position/editorial/
 
@@ -64,6 +130,7 @@ vector<int> longestObstacleCourseAtEachPosition(vector<int> &obstacles) {
 1 => 1, 2 => 2, 3 => 4, 4 => 8, 5 => 16
 */
 int numSubseq(vector<int> &nums, int target) {
+    int a = 0x0040;
     int m = 1e9 + 7;
     size_t n = nums.size();
     vector<int> pow_table(n, 1);
@@ -127,8 +194,8 @@ vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>> &edgeList,
 /*
 https://leetcode.com/problems/similar-string-groups/
 
-1. similar(X,Y)
-2. build graph
+1. similar(X,Y) => edges => groups => union find
+
 */
 int32_t numSimilarGroups(vector<string> &strs) {
     int16_t n = strs.size();
