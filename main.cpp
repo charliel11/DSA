@@ -14,32 +14,64 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET mostPoints
+#define TARGET maxScore
+
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
 
 /*
-https://leetcode.com/problems/solving-questions-with-brainpower/
+https://leetcode.com/problems/maximize-score-after-n-operations/
+
+(1, ..., 14)
+(1,2)->(3,4)-> ...
+(1,3)->(2,4)-> ...
 */
-uint64_t mostPoints(vector<vector<int>> &questions) {
-    size_t n = questions.size();
-    vector<uint64_t> dp(n, -1);
+int maxScore(vector<int> &nums) {
+    int n = nums.size();
+    int res = 0;
+    vector<vector<int>> dp(1 << n, vector<int>((n >> 1) + 1, 0));
+    auto dfs = [&](const auto &dfs, int mask, int idx) {
+        if (mask == 0) {
+            return 0;
+        }
 
-    auto dfs = [&](const auto &dfs, size_t i) {
-        if (i >= n)
-            return 0ull;
-        if (dp[i] != -1)
-            return dp[i];
+        if (dp[mask][idx] != 0) {
+            return dp[mask][idx];
+        }
 
-        uint64_t res = 0;
-        res += std::max(questions[i][0] + dfs(dfs, i + 1 + questions[i][1]), dfs(dfs, i + 1));
-        return dp[i] = res;
+        int res = 0;
+        for (int i = 0; i < n; ++i) {
+            if (mask & (1 << i)) {
+                for (int j = i + 1; j < n; ++j) {
+                    if (mask & (1 << j)) {
+                        int next = (mask ^ (1 << i));
+                        next ^= (1 << j);
+                        // print(next);
+                        res = std::max(res, idx * gcd(nums[i], nums[j]) + dfs(dfs, next, idx + 1));
+                    }
+                }
+            }
+        }
+        return dp[mask][idx] = res;
     };
-    return dfs(dfs, 0);
+    int mask = (1 << n) - 1;
+    res = dfs(dfs, mask, 1);
+    return res;
+}
+
+int countGoodStrings(int low, int high, int zero, int one) {
+    int m = 1e9 + 7;
+    int res = 0;
+    return res;
 }
 
 /*
 https://leetcode.com/problems/uncrossed-lines/
 */
-int maxUncrossedLines(vector<int> &nums1, vector<int> &nums2) {}
+int maxUncrossedLines(vector<int> &nums1, vector<int> &nums2) { return 1; }
 
 /*
 https://leetcode.com/problems/spiral-matrix/description/
