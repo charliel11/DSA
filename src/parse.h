@@ -45,6 +45,7 @@ void read(string &text, vector<bool> &res);
 void read(string &text, string &res);
 void read(string &text, int32_t &res);
 void read(string &text, int64_t &res);
+void read(string &text, uint64_t &res);
 void read(string &text, bool &res);
 
 /*

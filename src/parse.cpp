@@ -85,6 +85,7 @@ void read(string &text, vector<string> &res) {
 
 void read(string &text, int32_t &res) { res = stoi(text); }
 void read(string &text, int64_t &res) { res = stoll(text); }
+void read(string &text, uint64_t &res) { res = stoull(text); }
 void read(string &text, string &res) {
     replace(text.begin(), text.end(), '"', ' ');
     stringstream ss;
