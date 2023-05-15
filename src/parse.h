@@ -53,6 +53,8 @@ void read(string &text, bool &res);
 */
 void read(string &text, TreeNode *&res);
 
+void read(string &text, ListNode *&res);
+
 template <typename T> void printElem(T &x, stringstream &ss) {
     string s;
     getline(ss, s);

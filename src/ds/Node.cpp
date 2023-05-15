@@ -67,3 +67,23 @@ void deleteGraph(Node *root) {
     for (auto &it : hash)
         delete it.second;
 }
+
+/*
+https://leetcode.com/problems/swapping-nodes-in-a-linked-list/description/
+*/
+ListNode *swapNodes(ListNode *head, int k) {
+    ListNode *fast = head;
+    while (--k)
+        fast = fast->next;
+
+    ListNode *tmp = fast;
+
+    ListNode *slow = head;
+    while (fast->next != nullptr) {
+        fast = fast->next;
+        slow = slow->next;
+    }
+
+    std::swap(tmp->val, slow->val);
+    return head;
+}

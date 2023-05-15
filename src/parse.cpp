@@ -8,6 +8,7 @@
 #include <parse.h>
 #include <stdint.h>
 #include <string>
+#include <vcruntime.h>
 
 /*
 [1,1,1,null,1,null,null,1,1,null,1]
@@ -35,6 +36,20 @@ void read(string &text, TreeNode *&res) {
             cur->right = new TreeNode(stoi(right));
             q.push(cur->right);
         }
+    }
+}
+
+/*
+[7,9,6,6,7,8,3,0,9,5]
+*/
+void read(string &text, ListNode *&res) {
+    vector<int32_t> tmp;
+    read(text, tmp);
+    res = new ListNode(tmp[0]);
+    ListNode *cur = res;
+    for (size_t i = 1; i < tmp.size(); ++i) {
+        cur->next = new ListNode(tmp[i]);
+        cur = cur->next;
     }
 }
 

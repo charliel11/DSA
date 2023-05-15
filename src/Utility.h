@@ -1,6 +1,7 @@
 #pragma once
 
 #include "assert.h"
+#include <Node.h>
 #include <algorithm>
 #include <array>
 #include <bitset>
@@ -83,6 +84,18 @@ template <class A> void read(vt<A> &v) {
 #pragma region print tool
 
 template <typename T> void print(T &arg) { cout << arg << '\n'; }
+
+inline void print(ListNode *arg) {
+    std::cout << '{';
+    std::cout << arg->val;
+    arg = arg->next;
+    while (arg != nullptr) {
+        std::cout << ',' << arg->val;
+        arg = arg->next;
+    }
+    std::cout << '}' << '\n';
+}
+
 template <typename T> void print(vector<T> &arg) {
     std::cout << '{';
     auto it = arg.begin();
@@ -93,6 +106,7 @@ template <typename T> void print(vector<T> &arg) {
     }
     std::cout << '}' << '\n';
 }
+
 template <typename T> void print(vector<vector<T>> &arg) {
     std::cout << '{' << '\n';
     for (vector<T> &a : arg) {
@@ -100,9 +114,11 @@ template <typename T> void print(vector<vector<T>> &arg) {
     }
     std::cout << '}' << '\n';
 }
+
 template <typename T> void print(pair<T, T> &arg) {
     std::cout << '{' << arg.first << ',' << arg.second << '}' << '\n';
 }
+
 template <typename T, typename... Types> void print(T firstArg, Types... args) {
     print(firstArg); // call print() for the first argument
     print(args...);  // call print() for remaining arguments

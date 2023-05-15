@@ -156,6 +156,98 @@ inline bool isScramble(string s1, string s2) {
     return res;
 }
 
+namespace preprocessing {
+
+/*
+REVIEW:
+
+* pattern: using precompute to reduce dp complexity(3d -> 2d)
+
+*/
+
+/*
+https://leetcode.com/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
+
+"aba"
+
+"acca"
+"bbbb"
+"caca"
+
+f(0,0) -> cnt(0) * f(1,1)
+       -> f(1,0)
+
+*/
+inline int32_t numWays(vector<string> &words, string target) {
+    int32_t m = 1e9 + 7;
+    size_t wn = 0;
+    size_t tn = target.size();
+
+    int32_t freq[1001][26]{0};
+    for (size_t i = 0; i < words.size(); ++i) {
+        wn = max(wn, words[i].size());
+        for (size_t j = 0; j < words[i].size(); ++j) {
+            ++freq[j][words[i][j] - 'a'];
+        }
+    }
+    vector<vector<int32_t>> dp(wn, vector<int32_t>(tn, -1));
+
+    auto dfs = [&](const auto &dfs, size_t idx, size_t t) {
+        if (t == tn)
+            return 1;
+        if (idx == wn)
+            return 0;
+
+        if (dp[idx][t] != -1)
+            return dp[idx][t];
+
+        int64_t res = 0;
+        if (freq[idx][target[t] - 'a'] > 0) {
+            int64_t cnt = freq[idx][target[t] - 'a'];
+            res += cnt * dfs(dfs, idx + 1, t + 1);
+        }
+        res += dfs(dfs, idx + 1, t);
+        return dp[idx][t] = (res % m);
+    };
+
+    return dfs(dfs, 0, 0);
+}
+
+/*
+https://leetcode.com/problems/maximum-value-of-k-coins-from-piles/description/
+
+f(n,k) = max(f(n+1,k-1) + n1[1], 
+             f(n+1,k-2) + n1[1] + n1[2], 
+             ..., 
+             f(n+1,0) + n1[1] + n1[2] + ... + n1[k],
+             f(n+1,k))
+*/
+inline int32_t maxValueOfCoins(vector<vector<int32_t>> &piles, int32_t k) {
+    size_t n = piles.size();
+    for (int32_t i = 0; i < n; i++) {
+        for (int32_t j = 1; j < piles[i].size(); j++) {
+            piles[i][j] += piles[i][j - 1];
+        }
+    }
+
+    vector<vector<int32_t>> dp(n, vector<int32_t>(k + 1, -1));
+    auto dfs = [&dp, &piles](auto const &dfs, size_t idx, size_t k) {
+        if (k == 0 || idx == piles.size())
+            return 0;
+
+        if (dp[idx][k] != -1)
+            return dp[idx][k];
+
+        int32_t ans = dfs(dfs, idx + 1, k);
+        size_t len = piles[idx].size();
+        for (int i = 0; i < min(k, len); i++) {
+            ans = max(ans, piles[idx][i] + dfs(dfs, idx + 1, k - i - 1));
+        }
+        return dp[idx][k] = ans;
+    };
+    return dfs(dfs, 0, k);
+}
+
 /*
 https://leetcode.com/problems/number-of-ways-of-cutting-a-pizza/
 
@@ -176,9 +268,9 @@ inline int32_t ways(vector<string> &pizza, int32_t k) {
             cnt[r][c] = (pizza[r][c] == 'A');
     }
     NumMatrix apple(cnt);
+
     int32_t dp[51][51][11];
     memset(dp, 0xff, sizeof(dp));
-
     auto dfs = [&](auto const &dfs, int32_t idx, int32_t r1, int32_t c1) {
         if (idx == k) {
             if (apple.sumRegion(r1, c1, row - 1, col - 1) > 0)
@@ -212,7 +304,6 @@ inline int ways1(vector<string> &pizza, int k) {
     const int mod = 1000000000 + 7;
     int rows = pizza.size();
     int cols = pizza[0].size();
-    int dp[55][55][11] = {};
     int cnt[55][55] = {};
 
     for (int i = 1; i <= rows; i++)
@@ -220,6 +311,8 @@ inline int ways1(vector<string> &pizza, int k) {
             cnt[i][j] = cnt[i - 1][j] + cnt[i][j - 1] - cnt[i - 1][j - 1] +
                         (pizza[rows - i][cols - j] == 'A' ? 1 : 0);
         }
+
+    int dp[55][55][11] = {};
     for (int i = 0; i <= rows; i++)
         dp[i][0][0] = 1;
 
@@ -236,6 +329,59 @@ inline int ways1(vector<string> &pizza, int k) {
                 }
     return dp[rows][cols][k];
 }
+
+} // namespace preprocessing
+
+namespace mask {
+
+/*
+https://leetcode.com/problems/maximize-score-after-n-operations/
+
+(1, ..., 14)
+(1,2)->(3,4)-> ...
+(1,3)->(2,4)-> ...
+*/
+inline int maxScore(vector<int> &nums) {
+
+    auto gcd = [](const auto &gcd, int a, int b) {
+        if (b == 0)
+            return a;
+        return gcd(gcd, b, a % b);
+    };
+
+    int n = nums.size();
+    int res = 0;
+    vector<vector<int>> dp(1 << n, vector<int>((n >> 1) + 1, 0));
+    auto dfs = [&](const auto &dfs, int mask, int idx) {
+        if (mask == 0) {
+            return 0;
+        }
+
+        if (dp[mask][idx] != 0) {
+            return dp[mask][idx];
+        }
+
+        int res = 0;
+        for (int i = 0; i < n; ++i) {
+            if (mask & (1 << i)) {
+                for (int j = i + 1; j < n; ++j) {
+                    if (mask & (1 << j)) {
+                        int next = (mask ^ (1 << i));
+                        next ^= (1 << j);
+                        // print(next);
+                        res = std::max(res,
+                                       idx * gcd(gcd, nums[i], nums[j]) + dfs(dfs, next, idx + 1));
+                    }
+                }
+            }
+        }
+        return dp[mask][idx] = res;
+    };
+    int mask = (1 << n) - 1;
+    res = dfs(dfs, mask, 1);
+    return res;
+}
+} // namespace mask
 
 /*
 https://leetcode.com/problems/coin-change/description/

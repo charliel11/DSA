@@ -4,6 +4,7 @@
 
 using namespace dp;
 using namespace dp::split_array;
+using namespace dp::preprocessing;
 
 TEST(DP, minCost) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
