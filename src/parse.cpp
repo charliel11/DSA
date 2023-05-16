@@ -45,6 +45,8 @@ void read(string &text, TreeNode *&res) {
 void read(string &text, ListNode *&res) {
     vector<int32_t> tmp;
     read(text, tmp);
+    if (tmp.empty())
+        return;
     res = new ListNode(tmp[0]);
     ListNode *cur = res;
     for (size_t i = 1; i < tmp.size(); ++i) {

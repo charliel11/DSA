@@ -87,3 +87,17 @@ ListNode *swapNodes(ListNode *head, int k) {
     std::swap(tmp->val, slow->val);
     return head;
 }
+
+/*
+https://leetcode.com/problems/swap-nodes-in-pairs/submissions/323607887/
+*/
+ListNode *swapPairs(ListNode *head) {
+    if (head == nullptr || head->next == nullptr)
+        return head;
+    ListNode *res = head->next;
+    head->next = head->next->next;
+    res->next = head;
+
+    head->next = swapPairs(head->next);
+    return res;
+}

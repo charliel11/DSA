@@ -14,16 +14,30 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET countGoodStrings
+#define TARGET longestPalindromeSubseq
 
 /*
 https://leetcode.com/problems/count-ways-to-build-good-strings/
 TODO:
 */
 int countGoodStrings(int low, int high, int zero, int one) {
-    int m = 1e9 + 7;
-    int res = 0;
-    return res;
+    const int m = 1e9 + 7;
+    vector<int> dp(high + 1, -1);
+    auto dfs = [&](const auto &dfs, int n1, int n2) {
+        if (n1 + n2 > high)
+            return 0;
+
+        if (dp[n1 + n2] != -1)
+            return dp[n1 + n2];
+
+        int res = (n1 + n2 >= low && n1 + n2 <= high) ? 1 : 0;
+        res = res + dfs(dfs, n1 + zero, n2) % m;
+        res = res + dfs(dfs, n1, n2 + one) % m;
+        dp[n1 + n2] = res % m;
+        return dp[n1 + n2];
+    };
+
+    return dfs(dfs, 0, 0);
 }
 
 /*
@@ -350,7 +364,7 @@ int32_t longestZigZag(TreeNode *root) {
 /*
 https://leetcode.com/problems/longest-palindromic-subsequence/
 
-TODO:
+TODO: summary
 
 b,b,b,a,b
 1,1,1,1,1
@@ -360,19 +374,37 @@ bbbab
 f(i,j) = max(f(i+1,j-1)+(a[i]==a[j]),f(i+1,j), f(i,j-1))
 f(1,1) => f(2,1), f(1,0);
 */
-// int32_t longestPalindromeSubseq(string s) {
-//     size_t n = s.size();
-//     int32_t dp[1001][1001];
+int longestPalindromeSubseq(string s) {
+    size_t n = s.size();
+    vector<vector<int>> dp(n, vector<int>(n, -1));
 
-//     for ()
+    auto dfs = [&](const auto &dfs, int l, int r) {
+        if (l > r)
+            return 0;
+        if (l == r)
+            return 1;
 
-//         return dp[0][0];
-// }
+        if (dp[l][r] != -1)
+            return dp[l][r];
+
+        int res = 0;
+        if (s[l] == s[r])
+            res = std::max(res, 2 + dfs(dfs, l + 1, r - 1));
+        else {
+            res = std::max(res, dfs(dfs, l + 1, r));
+            res = std::max(res, dfs(dfs, l, r - 1));
+        }
+        return dp[l][r] = res;
+    };
+    return dfs(dfs, 0, n - 1);
+}
 
 /*
 https://leetcode.com/problems/minimum-number-of-visited-cells-in-a-grid/
+
+TODO:
 */
-// int32_t minimumVisitedCells(vector<vector<int32_t>> &grid) {}
+// int minimumVisitedCells(vector<vector<int>> &grid) {}
 
 /*
 https://leetcode.com/problems/validate-stack-sequences/description/
@@ -392,16 +424,6 @@ bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
         }
     }
     return st.empty();
-}
-
-/*
-https://leetcode.com/problems/minimum-reverse-operations/
-
-TODO:
-*/
-vector<int32_t> minReverseOperations(int32_t n, int32_t p, vector<int32_t> &banned, int32_t k) {
-    vector<int32_t> res{0};
-    return res;
 }
 
 /*------------------------------------------------------*/

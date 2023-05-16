@@ -86,6 +86,10 @@ template <class A> void read(vt<A> &v) {
 template <typename T> void print(T &arg) { cout << arg << '\n'; }
 
 inline void print(ListNode *arg) {
+    if (arg == nullptr) {
+        std::cout << "{}" << std::endl;
+        return;
+    }
     std::cout << '{';
     std::cout << arg->val;
     arg = arg->next;
