@@ -1,4 +1,5 @@
 #include <Node.h>
+#include <algorithm>
 #include <unordered_map>
 
 Node *createGraph(vector<vector<int32_t>> adjList) {
@@ -100,4 +101,37 @@ ListNode *swapPairs(ListNode *head) {
 
     head->next = swapPairs(head->next);
     return res;
+}
+
+/*
+https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/
+*/
+int pairSum(ListNode *head) {
+    ListNode *slow = head;
+    ListNode *fast = head;
+
+    int n = 1;
+    while (fast->next->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+        ++n;
+    }
+    vector<int> sum(n, 0);
+    n <<= 1;
+
+    fast = slow->next;
+    slow = head;
+
+    auto b = sum.begin();
+    auto e = sum.end();
+    while (fast != nullptr) {
+        --e;
+        *b += slow->val;
+        *e += fast->val;
+        ++b;
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    return *std::max_element(sum.begin(), sum.end());
 }

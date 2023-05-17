@@ -59,3 +59,4 @@ struct ListNode {
 
 ListNode *swapNodes(ListNode *head, int k);
 ListNode *swapPairs(ListNode *head);
+int pairSum(ListNode *head);
