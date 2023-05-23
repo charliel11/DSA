@@ -14,7 +14,9 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET countGoodStrings
+#define TARGET isBipartite
+
+bool isBipartite(vector<vector<int>> &graph) {}
 
 /*
 https://leetcode.com/problems/count-ways-to-build-good-strings/
