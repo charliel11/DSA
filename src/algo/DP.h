@@ -383,6 +383,41 @@ inline int maxScore(vector<int> &nums) {
 }
 } // namespace mask
 
+namespace game_theory {
+
+/*
+https://leetcode.com/problems/stone-game-iii
+*/
+inline string stoneGameIII(vector<int> &stoneValue) {
+    int n = stoneValue.size();
+    vector<int> dp(n, -1);
+
+    auto dfs = [&](const auto &dfs, int s) {
+        if (s >= n)
+            return 0;
+
+        if (dp[s] != -1)
+            return dp[s];
+
+        int sum = stoneValue[s];
+        int res = sum - dfs(dfs, s + 1);
+        if (s + 1 < n) {
+            sum += stoneValue[s + 1];
+            res = std::max(res, sum - dfs(dfs, s + 2));
+        }
+        if (s + 2 < n) {
+            sum += stoneValue[s + 2];
+            res = std::max(res, sum - dfs(dfs, s + 3));
+        }
+
+        return dp[s] = res;
+    };
+
+    int res = dfs(dfs, 0);
+    return res == 0 ? "Tie" : res > 0 ? "Alice" : "Bob";
+}
+} // namespace game_theory
+
 /*
 https://leetcode.com/problems/coin-change/description/
 

@@ -14,7 +14,7 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET isBipartite
+#define TARGET countGoodStrings
 
 bool isBipartite(vector<vector<int>> &graph) {}
 

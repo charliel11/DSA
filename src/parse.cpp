@@ -8,7 +8,6 @@
 #include <parse.h>
 #include <stdint.h>
 #include <string>
-#include <vcruntime.h>
 
 /*
 [1,1,1,null,1,null,null,1,1,null,1]
