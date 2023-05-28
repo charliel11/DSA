@@ -14,7 +14,33 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET countGoodStrings
+#define TARGET stoneGameII
+
+int stoneGameII(vector<int> &piles) {
+    int n = piles.size();
+    vector<vector<vector<int>>> dp(n, vector<vector<int>>(n + 1, vector<int>(2, -1)));
+
+    auto dfs = [&](const auto &dfs, int p, int m, bool f) {
+        if (p >= n)
+            return 0;
+
+        if (dp[p][m][f] != -1)
+            return dp[p][m][f];
+
+        int res = f ? INT_MIN : INT_MAX;
+        int sum = 0;
+        for (int i = 1; i <= std::min(2 * m, n - p); ++i) {
+            sum += piles[p + i - 1]; // p + i - 1 < n => i < n - p + 1
+            if (f) {
+                res = std::max(res, dfs(dfs, p + i, std::max(i, m), !f) + sum);
+            } else {
+                res = std::min(res, dfs(dfs, p + i, std::max(i, m), !f));
+            }
+        }
+        return dp[p][m][f] = res;
+    };
+    return dfs(dfs, 0, 1, true);
+}
 
 bool isBipartite(vector<vector<int>> &graph) {}
 
