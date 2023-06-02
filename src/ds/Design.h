@@ -2,6 +2,7 @@
 
 #include <queue>
 #include <set>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -47,4 +48,26 @@ class KthLargest {
             pq.pop();
         return pq.top();
     }
+};
+
+class MyHashSet {
+  public:
+    MyHashSet() {}
+
+    void add(int key) {}
+
+    void remove(int key) {}
+
+    bool contains(int key) {}
+};
+
+class UndergroundSystem {
+  public:
+    UndergroundSystem() {}
+
+    void checkIn(int id, string stationName, int t) {}
+
+    void checkOut(int id, string stationName, int t) {}
+
+    double getAverageTime(string startStation, string endStation) {}
 };

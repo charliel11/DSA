@@ -14,7 +14,55 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET stoneGameII
+#define TARGET maximumDetonation
+
+/*
+https://leetcode.com/problems/detonate-the-maximum-bombs/
+*/
+int maximumDetonation(vector<vector<int>> &bombs) {
+    int n = bombs.size();
+    vector<vector<int>> graph(n);
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            auto a = bombs[i], b = bombs[j];
+            int64_t dist = std::pow<int64_t>(a[0] - b[0], 2) + std::pow<int64_t>(a[1] - b[1], 2);
+            if (dist <= int64_t(a[2]) * int64_t(a[2])) {
+                graph[i].push_back(j);
+            }
+            if (dist <= int64_t(b[2]) * int64_t(b[2])) {
+                graph[j].push_back(i);
+            }
+        }
+    }
+
+    auto dfs = [&](const auto &dfs, vector<int> &edge, vector<int8_t> &v) {
+        if (edge.empty())
+            return 0;
+
+        int cnt = 0;
+        for (auto e : edge) {
+            if (!v[e]) {
+                v[e] = 1;
+                cnt += 1 + dfs(dfs, graph[e], v);
+            };
+        }
+
+        return cnt;
+    };
+
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+        vector<int8_t> v(n, 0);
+        v[i] = 1;
+        res = std::max(res, 1 + dfs(dfs, graph[i], v));
+        v[i] = 0;
+    }
+
+    return res;
+}
+
+int shortestPathBinaryMatrix(vector<vector<int>> &grid) {}
 
 int stoneGameII(vector<int> &piles) {
     int n = piles.size();
