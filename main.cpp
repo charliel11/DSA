@@ -14,7 +14,80 @@
 #include <vcruntime.h>
 #endif
 
-#define TARGET maximumDetonation
+#define TARGET numOfMinutes
+
+/*
+https://leetcode.com/problems/number-of-provinces/
+*/
+int findCircleNum(vector<vector<int>> &isConnected) {
+    int n = isConnected.size();
+    UnionFind uf(n);
+    int res = n;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < i; ++j) {
+            if (isConnected[i][j]) {
+                int r1 = uf.find_root(i);
+                int r2 = uf.find_root(j);
+                if (r1 != r2) {
+                    if (r1 > r2)
+                        std::swap(r1, r2);
+                    uf.insert(r2, r1);
+                    --n;
+                }
+            }
+        }
+    }
+    return res;
+}
+
+/*
+https://leetcode.com/problems/time-needed-to-inform-all-employees/
+*/
+int numOfMinutes(int n, int headID, vector<int> &manager, vector<int> &informTime) {
+    vector<vector<int>> graph(n);
+    for (int i = 0; i < n; ++i) {
+        if (manager[i] == -1)
+            continue;
+        graph[manager[i]].push_back(i);
+    }
+
+    int res = 0;
+    auto dfs = [&](const auto &dfs, int i) {
+        if (graph[i].empty())
+            return 0;
+
+        int time = 0;
+        for (int next : graph[i]) {
+            time = std::max(time, dfs(dfs, next));
+        }
+        return time + informTime[i];
+    };
+
+    return dfs(dfs, headID);
+}
+
+int maximumChild(vector<vector<int>> &graph) {
+    int n = graph.size();
+    vector<int> v(n, -1);
+    auto dfs = [&](const auto &dfs, int cur, int root) -> int {
+        v[cur] = root;
+        int cnt = 1;
+        for (int next : graph[cur]) {
+            if (v[next] == root)
+                continue;
+            cnt += dfs(dfs, next, root);
+        }
+        return cnt;
+    };
+
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+        if (v[i] > -1)
+            continue;
+        res = std::max(res, dfs(dfs, i, i));
+    }
+    return res;
+}
 
 /*
 https://leetcode.com/problems/detonate-the-maximum-bombs/
@@ -23,43 +96,25 @@ int maximumDetonation(vector<vector<int>> &bombs) {
     int n = bombs.size();
     vector<vector<int>> graph(n);
 
-    for (int i = 0; i < n; ++i) {
+    int64_t r1, r2, dist;
+    for (int i = 0; i < n - 1; ++i) {
+        r1 = bombs[i][2];
+        r1 *= r1;
         for (int j = i + 1; j < n; ++j) {
-            auto a = bombs[i], b = bombs[j];
-            int64_t dist = std::pow<int64_t>(a[0] - b[0], 2) + std::pow<int64_t>(a[1] - b[1], 2);
-            if (dist <= int64_t(a[2]) * int64_t(a[2])) {
+            int64_t dx = bombs[i][0] - bombs[j][0];
+            int64_t dy = bombs[i][1] - bombs[j][1];
+            dist = (dx * dx) + (dy * dy);
+            if (dist <= r1) {
                 graph[i].push_back(j);
             }
-            if (dist <= int64_t(b[2]) * int64_t(b[2])) {
+            r2 = bombs[j][2];
+            r2 *= r2;
+            if (dist <= r2) {
                 graph[j].push_back(i);
             }
         }
     }
-
-    auto dfs = [&](const auto &dfs, vector<int> &edge, vector<int8_t> &v) {
-        if (edge.empty())
-            return 0;
-
-        int cnt = 0;
-        for (auto e : edge) {
-            if (!v[e]) {
-                v[e] = 1;
-                cnt += 1 + dfs(dfs, graph[e], v);
-            };
-        }
-
-        return cnt;
-    };
-
-    int res = 0;
-    for (int i = 0; i < n; ++i) {
-        vector<int8_t> v(n, 0);
-        v[i] = 1;
-        res = std::max(res, 1 + dfs(dfs, graph[i], v));
-        v[i] = 0;
-    }
-
-    return res;
+    return maximumChild(graph);
 }
 
 int shortestPathBinaryMatrix(vector<vector<int>> &grid) {}
