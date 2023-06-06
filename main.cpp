@@ -11,7 +11,80 @@
 #include <queue>
 #include <stdint.h>
 
-#define TARGET maximumDetonation
+#define TARGET numOfMinutes
+
+/*
+https://leetcode.com/problems/number-of-provinces/
+*/
+int findCircleNum(vector<vector<int>> &isConnected) {
+    int n = isConnected.size();
+    UnionFind uf(n);
+    int res = n;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < i; ++j) {
+            if (isConnected[i][j]) {
+                int r1 = uf.find_root(i);
+                int r2 = uf.find_root(j);
+                if (r1 != r2) {
+                    if (r1 > r2)
+                        std::swap(r1, r2);
+                    uf.insert(r2, r1);
+                    --n;
+                }
+            }
+        }
+    }
+    return res;
+}
+
+/*
+https://leetcode.com/problems/time-needed-to-inform-all-employees/
+*/
+int numOfMinutes(int n, int headID, vector<int> &manager, vector<int> &informTime) {
+    vector<vector<int>> graph(n);
+    for (int i = 0; i < n; ++i) {
+        if (manager[i] == -1)
+            continue;
+        graph[manager[i]].push_back(i);
+    }
+
+    int res = 0;
+    auto dfs = [&](const auto &dfs, int i) {
+        if (graph[i].empty())
+            return 0;
+
+        int time = 0;
+        for (int next : graph[i]) {
+            time = std::max(time, dfs(dfs, next));
+        }
+        return time + informTime[i];
+    };
+
+    return dfs(dfs, headID);
+}
+
+int maximumChild(vector<vector<int>> &graph) {
+    int n = graph.size();
+    vector<int> v(n, -1);
+    auto dfs = [&](const auto &dfs, int cur, int root) -> int {
+        v[cur] = root;
+        int cnt = 1;
+        for (int next : graph[cur]) {
+            if (v[next] == root)
+                continue;
+            cnt += dfs(dfs, next, root);
+        }
+        return cnt;
+    };
+
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+        if (v[i] > -1)
+            continue;
+        res = std::max(res, dfs(dfs, i, i));
+    }
+    return res;
+}
 
 /*
 https://leetcode.com/problems/detonate-the-maximum-bombs/
@@ -39,25 +112,27 @@ int maximumDetonation(vector<vector<int>> &bombs) {
         }
     }
 
-    auto dfs = [](const auto &dfs, vector<vector<int>> &graph, vector<int8_t> &v, int i,
-                  int root) -> int {
-        v[i] = root;
-        int cnt = 1;
-        for (auto e : graph[i]) {
-            if (v[e] == root)
-                continue;
-            cnt += dfs(dfs, graph, v, e, root);
+    auto dfs = [&](const auto &dfs, vector<int> &edge, vector<int8_t> &v) {
+        if (edge.empty())
+            return 0;
+
+        int cnt = 0;
+        for (auto e : edge) {
+            if (!v[e]) {
+                v[e] = 1;
+                cnt += 1 + dfs(dfs, graph[e], v);
+            };
         }
 
         return cnt;
     };
 
     int res = 0;
-    vector<int8_t> v(n, -1);
     for (int i = 0; i < n; ++i) {
-        if (v[i] > -1)
-            continue;
-        res = std::max(res, dfs(dfs, graph, v, i, i));
+        vector<int8_t> v(n, 0);
+        v[i] = 1;
+        res = std::max(res, 1 + dfs(dfs, graph[i], v));
+        v[i] = 0;
     }
 
     return res;
