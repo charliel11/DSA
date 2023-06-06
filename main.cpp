@@ -1,18 +1,15 @@
-#include <Node.h>
-#include <UnionFind.h>
-#include <Utility.h>
+#include <DSA/Node.h>
+#include <DSA/UnionFind.h>
+#include <DSA/Utility.h>
+#include <DSA/parse.h>
 #include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <deque>
 #include <functional>
 #include <numeric>
-#include <parse.h>
 #include <queue>
 #include <stdint.h>
-#ifdef _MSVC
-#include <vcruntime.h>
-#endif
 
 #define TARGET maximumDetonation
 
@@ -23,40 +20,44 @@ int maximumDetonation(vector<vector<int>> &bombs) {
     int n = bombs.size();
     vector<vector<int>> graph(n);
 
-    for (int i = 0; i < n; ++i) {
+    int64_t r1, r2, dist;
+    for (int i = 0; i < n - 1; ++i) {
+        r1 = bombs[i][2];
+        r1 *= r1;
         for (int j = i + 1; j < n; ++j) {
-            auto a = bombs[i], b = bombs[j];
-            int64_t dist = std::pow<int64_t>(a[0] - b[0], 2) + std::pow<int64_t>(a[1] - b[1], 2);
-            if (dist <= int64_t(a[2]) * int64_t(a[2])) {
+            int64_t dx = bombs[i][0] - bombs[j][0];
+            int64_t dy = bombs[i][1] - bombs[j][1];
+            dist = (dx * dx) + (dy * dy);
+            if (dist <= r1) {
                 graph[i].push_back(j);
             }
-            if (dist <= int64_t(b[2]) * int64_t(b[2])) {
+            r2 = bombs[j][2];
+            r2 *= r2;
+            if (dist <= r2) {
                 graph[j].push_back(i);
             }
         }
     }
 
-    auto dfs = [&](const auto &dfs, vector<int> &edge, vector<int8_t> &v) {
-        if (edge.empty())
-            return 0;
-
-        int cnt = 0;
-        for (auto e : edge) {
-            if (!v[e]) {
-                v[e] = 1;
-                cnt += 1 + dfs(dfs, graph[e], v);
-            };
+    auto dfs = [](const auto &dfs, vector<vector<int>> &graph, vector<int8_t> &v, int i,
+                  int root) -> int {
+        v[i] = root;
+        int cnt = 1;
+        for (auto e : graph[i]) {
+            if (v[e] == root)
+                continue;
+            cnt += dfs(dfs, graph, v, e, root);
         }
 
         return cnt;
     };
 
     int res = 0;
+    vector<int8_t> v(n, -1);
     for (int i = 0; i < n; ++i) {
-        vector<int8_t> v(n, 0);
-        v[i] = 1;
-        res = std::max(res, 1 + dfs(dfs, graph[i], v));
-        v[i] = 0;
+        if (v[i] > -1)
+            continue;
+        res = std::max(res, dfs(dfs, graph, v, i, i));
     }
 
     return res;
@@ -75,7 +76,7 @@ int stoneGameII(vector<int> &piles) {
         if (dp[p][m][f] != -1)
             return dp[p][m][f];
 
-        int res = f ? INT_MIN : INT_MAX;
+        int res = f ? INT32_MIN : INT32_MAX;
         int sum = 0;
         for (int i = 1; i <= std::min(2 * m, n - p); ++i) {
             sum += piles[p + i - 1]; // p + i - 1 < n => i < n - p + 1

@@ -10,7 +10,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC .)
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
     DSA
-    PUBLIC
-    gtest_main
+    GTest::gtest_main
+    GTest::gtest
 )
 target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECTDIR="${PROJECT_SOURCE_DIR}")
+
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $<TARGET_FILE:GTest::gtest_main>
+    $<TARGET_FILE:GTest::gtest>
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>)

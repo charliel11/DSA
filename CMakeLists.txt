@@ -6,7 +6,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CUDA_ARCHITECTURES 86)
 project(LeetCode LANGUAGES C CXX)
 
-find_package(OpenMP REQUIRED)
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    set(GTest_DIR "external/install/Debug/lib/cmake/GTest")
+endif()
+
+if(${CMAKE_BUILD_TYPE} MATCHES "Release")
+    set(GTest_DIR "external/install/Release/lib/cmake/GTest")
+endif()
+
+find_package(GTest REQUIRED)
 
 # message("Your C++ compiler supports these C++ features:")
 
@@ -25,11 +33,9 @@ if(WIN32)
     add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
 endif()
 
-add_subdirectory(src)
+add_subdirectory(DSA)
 add_subdirectory(test)
-add_subdirectory(external/googletest)
 
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE DSA)
 target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECTDIR="${PROJECT_SOURCE_DIR}")
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Node.h"
+#include <DSA/Node.h>
 #include <algorithm>
 #include <sstream>
 #include <string>
@@ -8,26 +8,6 @@
 #include <vector>
 
 using namespace std;
-
-using VIntInt = tuple<vector<int32_t>, int32_t>;
-using VIntVIntIntVInt = tuple<vector<int32_t>, vector<int32_t>, int64_t, vector<int32_t>>;
-using VIntVIntIntInt = tuple<vector<int32_t>, vector<int32_t>, int64_t, int64_t>;
-using VVIntInt = tuple<vector<vector<int32_t>>, int32_t>;
-using VIntIntInt = tuple<vector<int32_t>, int32_t, int32_t>;
-using IntVVIntInt = tuple<int32_t, vector<vector<int32_t>>, int32_t>;
-using StrStrBool = tuple<string, string, bool>;
-using StrInt = tuple<string, int32_t>;
-using VStrIntInt = tuple<vector<string>, int32_t, int32_t>;
-
-void parse(std::string &data_text, std::vector<VIntInt> &res);
-void parse(std::string &data_text, std::vector<VVIntInt> &res);
-void parse(std::string &data_text, std::vector<VIntIntInt> &res);
-void parse(std::string &data_text, std::vector<StrStrBool> &res);
-void parse(std::string &data_text, std::vector<StrInt> &res);
-void parse(std::string &data_text, std::vector<VStrIntInt> &res);
-void parse(std::string &data_text, std::vector<IntVVIntInt> &res);
-void parse(std::string &data_text, std::vector<VIntVIntIntVInt> &res);
-void parse(std::string &data_text, std::vector<VIntVIntIntInt> &res);
 
 /*
 [1,2,3,4,5,6]

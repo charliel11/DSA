@@ -1,4 +1,4 @@
-#include <Trie.h>
+#include <DSA/Trie.h>
 #include <config.h>
 
 TEST(TRIE, insert) {

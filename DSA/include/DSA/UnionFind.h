@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Utility.h>
+#include <DSA/Utility.h>
 
 class UnionFind {
   public:

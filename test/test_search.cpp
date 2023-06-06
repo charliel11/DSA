@@ -1,11 +1,11 @@
-#include <BinarySearch.h>
+#include <DSA/BinarySearch.h>
 #include <config.h>
 
 using namespace bs;
 
 TEST(BINARYSEARCH, search) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(bs::search));
     auto cases = parse<p>(data_text);
@@ -16,7 +16,7 @@ TEST(BINARYSEARCH, search) {
 
 TEST(BINARYSEARCH, successfulPairs) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(successfulPairs));
     auto cases = parse<p>(data_text);

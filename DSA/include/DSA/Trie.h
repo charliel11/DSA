@@ -1,7 +1,7 @@
 #ifndef __TRIE_H__
 #define __TRIE_H__
 
-#include <Utility.h>
+#include <DSA/Utility.h>
 #include <string>
 
 using namespace std;

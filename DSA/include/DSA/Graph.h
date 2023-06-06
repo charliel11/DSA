@@ -1,12 +1,10 @@
 #pragma once
 
-#include <Utility.h>
+#include <DSA/Utility.h>
 #include <queue>
 #include <vector>
 
-#include <UnionFind.h>
-
-#include <Utility.h>
+#include <DSA/UnionFind.h>
 
 using namespace std;
 

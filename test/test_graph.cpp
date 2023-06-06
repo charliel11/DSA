@@ -1,9 +1,9 @@
-#include <Graph.h>
+#include <DSA/Graph.h>
 #include <config.h>
 
 TEST(GRAPH, minScore) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(minScore));
     auto cases = parse<p>(data_text);
@@ -14,7 +14,7 @@ TEST(GRAPH, minScore) {
 
 TEST(GRAPH, makeConnected) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(makeConnected));
     auto cases = parse<p>(data_text);
@@ -25,7 +25,7 @@ TEST(GRAPH, makeConnected) {
 
 TEST(GRAPH, countPairs) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(countPairs));
     auto cases = parse<p>(data_text);
@@ -36,7 +36,7 @@ TEST(GRAPH, countPairs) {
 
 TEST(GRAPH, longestCycle) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(longestCycle));
     auto cases = parse<p>(data_text);
@@ -47,7 +47,7 @@ TEST(GRAPH, longestCycle) {
 
 TEST(GRAPH, closedIsland) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(closedIsland));
     auto cases = parse<p>(data_text);
@@ -58,7 +58,7 @@ TEST(GRAPH, closedIsland) {
 
 TEST(GRAPH, numEnclaves) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(numEnclaves));
     auto cases = parse<p>(data_text);
@@ -69,7 +69,7 @@ TEST(GRAPH, numEnclaves) {
 
 TEST(GRAPH, canFinish) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(canFinish));
     auto cases = parse<p>(data_text);
@@ -80,7 +80,7 @@ TEST(GRAPH, canFinish) {
 
 TEST(GRAPH, findOrder) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(findOrder));
     auto cases = parse<p>(data_text);
@@ -91,7 +91,7 @@ TEST(GRAPH, findOrder) {
 
 TEST(GRAPH, largestPathValue) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(largestPathValue));
     auto cases = parse<p>(data_text);

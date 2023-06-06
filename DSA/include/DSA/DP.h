@@ -10,7 +10,7 @@
 #endif
 #include <vector>
 
-#include <PrefixSum.h>
+#include <DSA/PrefixSum.h>
 
 using namespace std;
 
@@ -43,14 +43,34 @@ inline int32_t minPathSum(vector<vector<int32_t>> &grid) {
 
 /*
 https://leetcode.com/problems/minimum-cost-for-tickets/description/
+RECAP:
 */
-inline int32_t mincostTickets(vector<int32_t> &days, vector<int32_t> &costs) {
-    int32_t dp[3]{0};
-    int32_t n = days.size();
-    for (int32_t i = 0; i < n; ++i) {
-    }
-    return 0;
-}
+// inline int mincostTickets(vector<int> &days, vector<int> &costs) {
+//     int n = days.size();
+//     auto dp = vector<int>(366, -1);
+
+//     auto dfs = [&](const auto &dfs, int i) {
+//         if (i == 366)
+//             return 0;
+
+//         if (dp[i][ticket] != -1)
+//             return dp[i][ticket];
+
+//         int res = INT_MAX;
+//         int next = i + 1;
+//         if (days[i] > ticket) {
+//             res = std::min(res, dfs(dfs, next, days[i]) + costs[0]);
+//             res = std::min(res, dfs(dfs, next, days[i] + 6) + costs[1]);
+//             res = std::min(res, dfs(dfs, next, days[i] + 29) + costs[2]);
+//         } else {
+//             res = std::min(res, dfs(dfs, next, ticket));
+//         }
+
+//         return dp[i][ticket] = res;
+//     };
+
+//     return dfs(dfs, 0, 0);
+// }
 
 namespace split_array {
 

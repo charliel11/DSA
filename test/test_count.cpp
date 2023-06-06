@@ -1,9 +1,9 @@
-#include <Count.h>
+#include <DSA/Count.h>
 #include <config.h>
 
 TEST(Count, zeroFilledSubarray) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(zeroFilledSubarray));
     auto cases = parse<p>(data_text);
@@ -14,7 +14,7 @@ TEST(Count, zeroFilledSubarray) {
 
 TEST(Count, findTheLongestBalancedSubstring) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(findTheLongestBalancedSubstring));
     auto cases = parse<p>(data_text);

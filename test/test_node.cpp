@@ -1,4 +1,4 @@
-#include <Node.h>
+#include <DSA/Node.h>
 #include <config.h>
 
 /*
@@ -6,11 +6,10 @@
 */
 TEST(NODE, cloneGraph) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + "createGraph" + EXT);
+    std::string data_text = readtxt(DATAPATH + "createGraph");
 
-    vector<VVIntInt> cases;
-    parse(data_text, cases);
-
+    using p = tuple<vector<vector<int>>, int>;
+    auto cases = parse<p>(data_text);
     for (auto &c : cases) {
         Node *res = createGraph(get<0>(c));
         Node *res_clone = cloneGraph(res);
@@ -22,10 +21,10 @@ TEST(NODE, cloneGraph) {
 
 TEST(NODE, createGraph) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
-    vector<VVIntInt> cases;
-    parse(data_text, cases);
+    using p = tuple<vector<vector<int>>, int>;
+    auto cases = parse<p>(data_text);
     for (auto &c : cases) {
         Node *res = createGraph(get<0>(c));
         deleteGraph(res);

@@ -1,6 +1,5 @@
-#include <DP.h>
+#include <DSA/DP.h>
 #include <config.h>
-#include <corecrt_startup.h>
 
 using namespace dp;
 using namespace dp::split_array;
@@ -8,7 +7,7 @@ using namespace dp::preprocessing;
 
 TEST(DP, minCost) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(minCost));
     auto cases = parse<p>(data_text);
@@ -19,7 +18,7 @@ TEST(DP, minCost) {
 
 TEST(DP, numberOfArrays) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(numberOfArrays));
     auto cases = parse<p>(data_text);
@@ -30,7 +29,7 @@ TEST(DP, numberOfArrays) {
 
 TEST(DP, minPathSum) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(minPathSum));
     auto cases = parse<p>(data_text);
@@ -41,7 +40,7 @@ TEST(DP, minPathSum) {
 
 TEST(DP, isScramble) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(isScramble));
     auto cases = parse<p>(data_text);
@@ -52,7 +51,7 @@ TEST(DP, isScramble) {
 
 TEST(DP, ways) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(ways));
     auto cases = parse<p>(data_text);
@@ -63,7 +62,7 @@ TEST(DP, ways) {
 
 TEST(DP, coinChange) {
     std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    std::string data_text = readtxt(DATAPATH + test_name + EXT);
+    std::string data_text = readtxt(DATAPATH + test_name);
 
     using p = decltype(arguments(coinChange));
     auto cases = parse<p>(data_text);
@@ -71,3 +70,15 @@ TEST(DP, coinChange) {
         ASSERT_EQ(coinChange(get<0>(c), get<1>(c)), get<2>(c));
     }
 }
+
+// TEST(DP, mincostTickets) {
+//     std::string test_name =
+//     ::testing::UnitTest::GetInstance()->current_test_info()->name();
+//     std::string data_text = readtxt(DATAPATH + test_name);
+
+//     using p = decltype(arguments(mincostTickets));
+//     auto cases = parse<p>(data_text);
+//     for (auto &c : cases) {
+//         ASSERT_EQ(mincostTickets(get<0>(c), get<1>(c)), get<2>(c));
+//     }
+// }
