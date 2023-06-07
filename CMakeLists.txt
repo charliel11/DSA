@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -6,14 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CUDA_ARCHITECTURES 86)
 project(LeetCode LANGUAGES C CXX)
 
-if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    set(GTest_DIR "external/install/Debug/lib/cmake/GTest")
-endif()
-
-if(${CMAKE_BUILD_TYPE} MATCHES "Release")
-    set(GTest_DIR "external/install/Release/lib/cmake/GTest")
-endif()
-
+set(GTest_DIR "external/install/lib/cmake/GTest")
 find_package(GTest REQUIRED)
 
 # message("Your C++ compiler supports these C++ features:")
