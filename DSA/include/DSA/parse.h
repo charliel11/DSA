@@ -9,8 +9,6 @@
 
 // using namespace std;
 
-namespace utility {
-
 /*
 [1,2,3,4,5,6]
 */
@@ -38,36 +36,33 @@ void parse_test_case(string &text, TreeNode *&res);
 void parse_test_case(string &text, ListNode *&res);
 
 template <typename T> void printElem(T &x, stringstream &ss) {
-  string s;
-  getline(ss, s);
-  parse_test_case(s, x);
+    string s;
+    getline(ss, s);
+    parse_test_case(s, x);
 };
 
 template <typename TupleT, std::size_t... Is>
-void printTupleManual(TupleT &tp, std::index_sequence<Is...>,
-                      stringstream &ss) {
-  (printElem(std::get<Is>(tp), ss), ...);
+void printTupleManual(TupleT &tp, std::index_sequence<Is...>, stringstream &ss) {
+    (printElem(std::get<Is>(tp), ss), ...);
 };
 
 template <typename T> vector<T> parse(std::string &data_text) {
-  stringstream ss(data_text);
-  vector<T> res;
-  constexpr size_t n = tuple_size_v<T>;
-  while (ss.peek() != -1) {
-    res.push_back({});
-    printTupleManual(res.back(), std::make_index_sequence<n>{}, ss);
-  }
-  return res;
+    stringstream ss(data_text);
+    vector<T> res;
+    constexpr size_t n = tuple_size_v<T>;
+    while (ss.peek() != -1) {
+        res.push_back({});
+        printTupleManual(res.back(), std::make_index_sequence<n>{}, ss);
+    }
+    return res;
 };
 
 template <typename Sig> struct signature;
 
 template <typename R, typename... Args> struct signature<R(Args...)> {
-  using type = std::tuple<decay_t<Args>..., decay_t<R>>;
+    using type = std::tuple<decay_t<Args>..., decay_t<R>>;
 };
 
 template <typename F> auto arguments(const F &) -> typename signature<F>::type;
 
 std::string readtxt(std::string path);
-
-} // namespace utility

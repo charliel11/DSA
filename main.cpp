@@ -6,6 +6,7 @@
 #include <cstring>
 #include <deque>
 #include <functional>
+#include <iostream>
 #include <numeric>
 #include <queue>
 #include <stdint.h>
@@ -18,155 +19,153 @@ using namespace std;
 https://leetcode.com/problems/number-of-provinces/
 */
 int findCircleNum(vector<vector<int>> &isConnected) {
-  int n = isConnected.size();
-  UnionFind uf(n);
-  int res = n;
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < i; ++j) {
-      if (isConnected[i][j]) {
-        int r1 = uf.find_root(i);
-        int r2 = uf.find_root(j);
-        if (r1 != r2) {
-          if (r1 > r2)
-            std::swap(r1, r2);
-          uf.insert(r2, r1);
-          --n;
+    int n = isConnected.size();
+    UnionFind uf(n);
+    int res = n;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < i; ++j) {
+            if (isConnected[i][j]) {
+                int r1 = uf.find_root(i);
+                int r2 = uf.find_root(j);
+                if (r1 != r2) {
+                    if (r1 > r2)
+                        std::swap(r1, r2);
+                    uf.insert(r2, r1);
+                    --n;
+                }
+            }
         }
-      }
     }
-  }
-  return res;
+    return res;
 }
 
 /*
 https://leetcode.com/problems/time-needed-to-inform-all-employees/
 */
-int numOfMinutes(int n, int headID, vector<int> &manager,
-                 vector<int> &informTime) {
-  vector<vector<int>> graph(n);
-  for (int i = 0; i < n; ++i) {
-    if (manager[i] == -1)
-      continue;
-    graph[manager[i]].push_back(i);
-  }
-
-  int res = 0;
-  auto dfs = [&](const auto &dfs, int i) {
-    if (graph[i].empty())
-      return 0;
-
-    int time = 0;
-    for (int next : graph[i]) {
-      time = std::max(time, dfs(dfs, next));
+int numOfMinutes(int n, int headID, vector<int> &manager, vector<int> &informTime) {
+    vector<vector<int>> graph(n);
+    for (int i = 0; i < n; ++i) {
+        if (manager[i] == -1)
+            continue;
+        graph[manager[i]].push_back(i);
     }
-    return time + informTime[i];
-  };
 
-  return dfs(dfs, headID);
+    int res = 0;
+    auto dfs = [&](const auto &dfs, int i) {
+        if (graph[i].empty())
+            return 0;
+
+        int time = 0;
+        for (int next : graph[i]) {
+            time = std::max(time, dfs(dfs, next));
+        }
+        return time + informTime[i];
+    };
+
+    return dfs(dfs, headID);
 }
 
 int maximumChild(vector<vector<int>> &graph) {
-  int n = graph.size();
-  vector<int> v(n, -1);
-  auto dfs = [&](const auto &dfs, int cur, int root) -> int {
-    v[cur] = root;
-    int cnt = 1;
-    for (int next : graph[cur]) {
-      if (v[next] == root)
-        continue;
-      cnt += dfs(dfs, next, root);
-    }
-    return cnt;
-  };
+    int n = graph.size();
+    vector<int> v(n, -1);
+    auto dfs = [&](const auto &dfs, int cur, int root) -> int {
+        v[cur] = root;
+        int cnt = 1;
+        for (int next : graph[cur]) {
+            if (v[next] == root)
+                continue;
+            cnt += dfs(dfs, next, root);
+        }
+        return cnt;
+    };
 
-  int res = 0;
-  for (int i = 0; i < n; ++i) {
-    if (v[i] > -1)
-      continue;
-    res = std::max(res, dfs(dfs, i, i));
-  }
-  return res;
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+        if (v[i] > -1)
+            continue;
+        res = std::max(res, dfs(dfs, i, i));
+    }
+    return res;
 }
 
 /*
 https://leetcode.com/problems/detonate-the-maximum-bombs/
 */
 int maximumDetonation(vector<vector<int>> &bombs) {
-  int n = bombs.size();
-  vector<vector<int>> graph(n);
+    int n = bombs.size();
+    vector<vector<int>> graph(n);
 
-  int64_t r1, r2, dist;
-  for (int i = 0; i < n - 1; ++i) {
-    r1 = bombs[i][2];
-    r1 *= r1;
-    for (int j = i + 1; j < n; ++j) {
-      int64_t dx = bombs[i][0] - bombs[j][0];
-      int64_t dy = bombs[i][1] - bombs[j][1];
-      dist = (dx * dx) + (dy * dy);
-      if (dist <= r1) {
-        graph[i].push_back(j);
-      }
-      r2 = bombs[j][2];
-      r2 *= r2;
-      if (dist <= r2) {
-        graph[j].push_back(i);
-      }
-    }
-  }
-
-  auto dfs = [&](const auto &dfs, vector<int> &edge, vector<int8_t> &v) {
-    if (edge.empty())
-      return 0;
-
-    int cnt = 0;
-    for (auto e : edge) {
-      if (!v[e]) {
-        v[e] = 1;
-        cnt += 1 + dfs(dfs, graph[e], v);
-      };
+    int64_t r1, r2, dist;
+    for (int i = 0; i < n - 1; ++i) {
+        r1 = bombs[i][2];
+        r1 *= r1;
+        for (int j = i + 1; j < n; ++j) {
+            int64_t dx = bombs[i][0] - bombs[j][0];
+            int64_t dy = bombs[i][1] - bombs[j][1];
+            dist = (dx * dx) + (dy * dy);
+            if (dist <= r1) {
+                graph[i].push_back(j);
+            }
+            r2 = bombs[j][2];
+            r2 *= r2;
+            if (dist <= r2) {
+                graph[j].push_back(i);
+            }
+        }
     }
 
-    return cnt;
-  };
+    auto dfs = [&](const auto &dfs, vector<int> &edge, vector<int8_t> &v) {
+        if (edge.empty())
+            return 0;
 
-  int res = 0;
-  for (int i = 0; i < n; ++i) {
-    vector<int8_t> v(n, 0);
-    v[i] = 1;
-    res = std::max(res, 1 + dfs(dfs, graph[i], v));
-    v[i] = 0;
-  }
+        int cnt = 0;
+        for (auto e : edge) {
+            if (!v[e]) {
+                v[e] = 1;
+                cnt += 1 + dfs(dfs, graph[e], v);
+            };
+        }
 
-  return res;
+        return cnt;
+    };
+
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+        vector<int8_t> v(n, 0);
+        v[i] = 1;
+        res = std::max(res, 1 + dfs(dfs, graph[i], v));
+        v[i] = 0;
+    }
+
+    return res;
 }
 
 int shortestPathBinaryMatrix(vector<vector<int>> &grid) {}
 
 int stoneGameII(vector<int> &piles) {
-  int n = piles.size();
-  vector<vector<vector<int>>> dp(
-      n, vector<vector<int>>(n + 1, vector<int>(2, -1)));
+    int n = piles.size();
+    vector<vector<vector<int>>> dp(n, vector<vector<int>>(n + 1, vector<int>(2, -1)));
 
-  auto dfs = [&](const auto &dfs, int p, int m, bool f) {
-    if (p >= n)
-      return 0;
+    auto dfs = [&](const auto &dfs, int p, int m, bool f) {
+        if (p >= n)
+            return 0;
 
-    if (dp[p][m][f] != -1)
-      return dp[p][m][f];
+        if (dp[p][m][f] != -1)
+            return dp[p][m][f];
 
-    int res = f ? INT32_MIN : INT32_MAX;
-    int sum = 0;
-    for (int i = 1; i <= std::min(2 * m, n - p); ++i) {
-      sum += piles[p + i - 1]; // p + i - 1 < n => i < n - p + 1
-      if (f) {
-        res = std::max(res, dfs(dfs, p + i, std::max(i, m), !f) + sum);
-      } else {
-        res = std::min(res, dfs(dfs, p + i, std::max(i, m), !f));
-      }
-    }
-    return dp[p][m][f] = res;
-  };
-  return dfs(dfs, 0, 1, true);
+        int res = f ? INT32_MIN : INT32_MAX;
+        int sum = 0;
+        for (int i = 1; i <= std::min(2 * m, n - p); ++i) {
+            sum += piles[p + i - 1]; // p + i - 1 < n => i < n - p + 1
+            if (f) {
+                res = std::max(res, dfs(dfs, p + i, std::max(i, m), !f) + sum);
+            } else {
+                res = std::min(res, dfs(dfs, p + i, std::max(i, m), !f));
+            }
+        }
+        return dp[p][m][f] = res;
+    };
+    return dfs(dfs, 0, 1, true);
 }
 
 bool isBipartite(vector<vector<int>> &graph) {}
@@ -176,92 +175,92 @@ https://leetcode.com/problems/count-ways-to-build-good-strings/
 TODO:
 */
 int countGoodStrings(int low, int high, int zero, int one) {
-  const int m = 1e9 + 7;
-  vector<int> dp(high + 1, -1);
-  auto dfs = [&](const auto &dfs, int n1, int n2) {
-    if (n1 + n2 > high)
-      return 0;
+    const int m = 1e9 + 7;
+    vector<int> dp(high + 1, -1);
+    auto dfs = [&](const auto &dfs, int n1, int n2) {
+        if (n1 + n2 > high)
+            return 0;
 
-    if (dp[n1 + n2] != -1)
-      return dp[n1 + n2];
+        if (dp[n1 + n2] != -1)
+            return dp[n1 + n2];
 
-    int res = (n1 + n2 >= low && n1 + n2 <= high) ? 1 : 0;
-    res = res + dfs(dfs, n1 + zero, n2) % m;
-    res = res + dfs(dfs, n1, n2 + one) % m;
-    dp[n1 + n2] = res % m;
-    return dp[n1 + n2];
-  };
+        int res = (n1 + n2 >= low && n1 + n2 <= high) ? 1 : 0;
+        res = res + dfs(dfs, n1 + zero, n2) % m;
+        res = res + dfs(dfs, n1, n2 + one) % m;
+        dp[n1 + n2] = res % m;
+        return dp[n1 + n2];
+    };
 
-  return dfs(dfs, 0, 0);
+    return dfs(dfs, 0, 0);
 }
 
 /*
 https://leetcode.com/problems/uncrossed-lines/
 */
 int maxUncrossedLines(vector<int> &nums1, vector<int> &nums2) {
-  int n1 = nums1.size();
-  int n2 = nums2.size();
+    int n1 = nums1.size();
+    int n2 = nums2.size();
 
-  vector<vector<int>> dp(n1, vector<int>(n2, -1));
-  auto dfs = [&](const auto &dfs, int i1, int i2) {
-    if (i1 == n1 || i2 == n2)
-      return 0;
+    vector<vector<int>> dp(n1, vector<int>(n2, -1));
+    auto dfs = [&](const auto &dfs, int i1, int i2) {
+        if (i1 == n1 || i2 == n2)
+            return 0;
 
-    if (dp[i1][i2] != -1)
-      return dp[i1][i2];
+        if (dp[i1][i2] != -1)
+            return dp[i1][i2];
 
-    int res = 0;
-    if (nums1[i1] == nums2[i2])
-      res = std::max(res, 1 + dfs(dfs, i1 + 1, i2 + 1));
-    else
-      res = std::max(dfs(dfs, i1 + 1, i2), dfs(dfs, i1, i2 + 1));
+        int res = 0;
+        if (nums1[i1] == nums2[i2])
+            res = std::max(res, 1 + dfs(dfs, i1 + 1, i2 + 1));
+        else
+            res = std::max(dfs(dfs, i1 + 1, i2), dfs(dfs, i1, i2 + 1));
 
-    return dp[i1][i2] = res;
-  };
+        return dp[i1][i2] = res;
+    };
 
-  return dfs(dfs, 0, 0);
+    return dfs(dfs, 0, 0);
 }
 
 /*
 https://leetcode.com/problems/spiral-matrix/description/
 */
 vector<int> spiralOrder(vector<vector<int>> &matrix) {
-  vector<vector<int>> m{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-  int mi = 0;
-  int nr = matrix.size(), nc = matrix[0].size();
-  int r_begin = 0, r_end = nr - 1, c_begin = 0, c_end = nc - 1;
-  int *end[4][2];
-  end[0][0] = &r_begin, end[0][1] = &c_end;
-  end[1][0] = &r_end, end[1][1] = &c_end;
-  end[2][0] = &r_end, end[2][1] = &c_begin;
-  end[3][0] = &r_begin, end[3][1] = &c_begin;
+    vector<vector<int>> m{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int mi = 0;
+    int nr = matrix.size(), nc = matrix[0].size();
+    int r_begin = 0, r_end = nr - 1, c_begin = 0, c_end = nc - 1;
+    int *end[4][2];
+    end[0][0] = &r_begin, end[0][1] = &c_end;
+    end[1][0] = &r_end, end[1][1] = &c_end;
+    end[2][0] = &r_end, end[2][1] = &c_begin;
+    end[3][0] = &r_begin, end[3][1] = &c_begin;
 
-  vector<int> res;
-  res.reserve(nr * nc);
-  int r = 0, c = 0;
-  for (int i = 0; i < nr * nc; ++i) {
-    res.push_back(matrix[r][c]);
-    if (r == *end[mi][0] && c == *end[mi][1]) {
-      switch (mi) {
-      case 0:
-        ++r_begin;
-        break;
-      case 1:
-        --c_end;
-        break;
-      case 2:
-        --r_end;
-        break;
-      case 3:
-        ++c_begin;
-        break;
-      }
-      mi = (mi + 1) % 4;
+    vector<int> res;
+    res.reserve(nr * nc);
+    int r = 0, c = 0;
+    for (int i = 0; i < nr * nc; ++i) {
+        res.push_back(matrix[r][c]);
+        if (r == *end[mi][0] && c == *end[mi][1]) {
+            switch (mi) {
+            case 0:
+                ++r_begin;
+                break;
+            case 1:
+                --c_end;
+                break;
+            case 2:
+                --r_end;
+                break;
+            case 3:
+                ++c_begin;
+                break;
+            }
+            mi = (mi + 1) % 4;
+        }
+        r += m[mi][0];
+        c += m[mi][1];
     }
-    r += m[mi][0];
-    c += m[mi][1];
-  }
-  return res;
+    return res;
 }
 /*
 https://leetcode.com/problems/find-the-longest-valid-obstacle-course-at-each-position/editorial/
@@ -270,21 +269,20 @@ LIS -> patient sort + binary search
 
 */
 vector<int> longestObstacleCourseAtEachPosition(vector<int> &obstacles) {
-  vector<int> stack;
-  int n = obstacles.size();
-  stack.reserve(n);
-  vector<int> res(n);
+    vector<int> stack;
+    int n = obstacles.size();
+    stack.reserve(n);
+    vector<int> res(n);
 
-  for (int i = 0; i < n; ++i) {
-    int idx =
-        upper_bound(stack.begin(), stack.end(), obstacles[i]) - stack.begin();
-    if (idx == stack.size())
-      stack.push_back(obstacles[i]);
-    else
-      stack[idx] = obstacles[i];
-    res[i] = idx + 1;
-  }
-  return res;
+    for (int i = 0; i < n; ++i) {
+        int idx = upper_bound(stack.begin(), stack.end(), obstacles[i]) - stack.begin();
+        if (idx == stack.size())
+            stack.push_back(obstacles[i]);
+        else
+            stack[idx] = obstacles[i];
+        res[i] = idx + 1;
+    }
+    return res;
 }
 
 /*
@@ -312,27 +310,27 @@ vector<int> longestObstacleCourseAtEachPosition(vector<int> &obstacles) {
 1 => 1, 2 => 2, 3 => 4, 4 => 8, 5 => 16
 */
 int numSubseq(vector<int> &nums, int target) {
-  int a = 0x0040;
-  int m = 1e9 + 7;
-  size_t n = nums.size();
-  vector<int> pow_table(n, 1);
-  for (int i = 1; i < n; ++i) {
-    pow_table[i] = (pow_table[i - 1] * 2) % m;
-  }
-  sort(begin(nums), end(nums));
-
-  int64_t res = 0;
-  int l = 0, r = n - 1;
-  while (l <= r) {
-    if (nums[l] + nums[r] <= target) {
-      res = (res + pow_table[r - l]) % m;
-      ++l;
-    } else {
-      --r;
+    int a = 0x0040;
+    int m = 1e9 + 7;
+    size_t n = nums.size();
+    vector<int> pow_table(n, 1);
+    for (int i = 1; i < n; ++i) {
+        pow_table[i] = (pow_table[i - 1] * 2) % m;
     }
-  }
+    sort(begin(nums), end(nums));
 
-  return res;
+    int64_t res = 0;
+    int l = 0, r = n - 1;
+    while (l <= r) {
+        if (nums[l] + nums[r] <= target) {
+            res = (res + pow_table[r - l]) % m;
+            ++l;
+        } else {
+            --r;
+        }
+    }
+
+    return res;
 }
 
 /*
@@ -342,35 +340,35 @@ union_find variant
 */
 vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>> &edgeList,
                                        vector<vector<int>> &queries) {
-  UnionFind uf(n);
-  sort(edgeList.begin(), edgeList.end(),
-       [](vector<int> &a, vector<int> &b) { return a[2] < b[2]; });
-  size_t qn = queries.size();
-  size_t en = edgeList.size();
-  vector<int32_t> idx(qn);
-  std::iota(idx.begin(), idx.end(), 0);
-  sort(idx.begin(), idx.end(),
-       [&queries](int a, int b) { return queries[a][2] < queries[b][2]; });
-  vector<bool> res(qn);
+    UnionFind uf(n);
+    sort(edgeList.begin(), edgeList.end(),
+         [](vector<int> &a, vector<int> &b) { return a[2] < b[2]; });
+    size_t qn = queries.size();
+    size_t en = edgeList.size();
+    vector<int32_t> idx(qn);
+    std::iota(idx.begin(), idx.end(), 0);
+    sort(idx.begin(), idx.end(),
+         [&queries](int a, int b) { return queries[a][2] < queries[b][2]; });
+    vector<bool> res(qn);
 
-  int32_t j = 0;
-  for (auto i : idx) {
-    int32_t limit = queries[i][2];
-    for (; j < en && edgeList[j][2] < limit; ++j) {
-      int32_t r1 = uf.find_root(edgeList[j][0]);
-      int32_t r2 = uf.find_root(edgeList[j][1]);
-      if (r1 != r2) {
-        int32_t tmp = std::min(r1, r2);
-        r2 = std::max(r1, r2);
-        r1 = tmp;
-        uf.insert(r2, r1);
-      }
+    int32_t j = 0;
+    for (auto i : idx) {
+        int32_t limit = queries[i][2];
+        for (; j < en && edgeList[j][2] < limit; ++j) {
+            int32_t r1 = uf.find_root(edgeList[j][0]);
+            int32_t r2 = uf.find_root(edgeList[j][1]);
+            if (r1 != r2) {
+                int32_t tmp = std::min(r1, r2);
+                r2 = std::max(r1, r2);
+                r1 = tmp;
+                uf.insert(r2, r1);
+            }
+        }
+        int32_t r1 = uf.find_root(queries[i][0]);
+        int32_t r2 = uf.find_root(queries[i][1]);
+        res[i] = r1 == r2;
     }
-    int32_t r1 = uf.find_root(queries[i][0]);
-    int32_t r2 = uf.find_root(queries[i][1]);
-    res[i] = r1 == r2;
-  }
-  return res;
+    return res;
 }
 
 /*
@@ -380,34 +378,34 @@ https://leetcode.com/problems/similar-string-groups/
 
 */
 int32_t numSimilarGroups(vector<string> &strs) {
-  int16_t n = strs.size();
-  int16_t sn = strs[0].size();
-  vector<vector<int16_t>> edges;
-  for (int16_t i = 0; i < n; ++i) {
-    for (int16_t j = i + 1; j < n; ++j) {
-      int16_t cnt = 0;
-      for (int16_t k = 0; k < sn && cnt < 3; ++k) {
-        if (strs[i][k] != strs[j][k])
-          ++cnt;
-      }
-      if (cnt == 2 || cnt == 0)
-        edges.push_back({i, j});
+    int16_t n = strs.size();
+    int16_t sn = strs[0].size();
+    vector<vector<int16_t>> edges;
+    for (int16_t i = 0; i < n; ++i) {
+        for (int16_t j = i + 1; j < n; ++j) {
+            int16_t cnt = 0;
+            for (int16_t k = 0; k < sn && cnt < 3; ++k) {
+                if (strs[i][k] != strs[j][k])
+                    ++cnt;
+            }
+            if (cnt == 2 || cnt == 0)
+                edges.push_back({i, j});
+        }
     }
-  }
-  UnionFind uf(n);
-  int32_t n_connected_component = n;
-  for (auto &e : edges) {
-    int32_t r1 = uf.find_root(e[0]);
-    int32_t r2 = uf.find_root(e[1]);
-    if (r1 != r2) {
-      int32_t tmp = std::min(r1, r2);
-      r2 = std::max(r1, r2);
-      r1 = tmp;
-      uf.insert(r2, r1);
-      --n_connected_component;
+    UnionFind uf(n);
+    int32_t n_connected_component = n;
+    for (auto &e : edges) {
+        int32_t r1 = uf.find_root(e[0]);
+        int32_t r2 = uf.find_root(e[1]);
+        if (r1 != r2) {
+            int32_t tmp = std::min(r1, r2);
+            r2 = std::max(r1, r2);
+            r1 = tmp;
+            uf.insert(r2, r1);
+            --n_connected_component;
+        }
     }
-  }
-  return n_connected_component;
+    return n_connected_component;
 }
 
 /*
@@ -417,25 +415,24 @@ https://leetcode.com/problems/profitable-schemes/
 int32_t profitableSchemes(int32_t n, int32_t minProfit, vector<int32_t> &group,
                           vector<int32_t> &profit) {
 
-  int32_t pn = profit.size();
-  int32_t res = 0;
+    int32_t pn = profit.size();
+    int32_t res = 0;
 
-  auto dfs = [&](const auto &dfs, int32_t idx, int32_t cur_profit,
-                 int32_t cur_n) {
-    if (cur_n < 0)
-      return;
-    if (idx == pn) {
-      if (cur_profit >= minProfit)
-        ++res;
-      return;
-    }
-    dfs(dfs, idx + 1, cur_profit + profit[idx], cur_n - group[idx]);
-    dfs(dfs, idx + 1, cur_profit, cur_n);
-    return;
-  };
+    auto dfs = [&](const auto &dfs, int32_t idx, int32_t cur_profit, int32_t cur_n) {
+        if (cur_n < 0)
+            return;
+        if (idx == pn) {
+            if (cur_profit >= minProfit)
+                ++res;
+            return;
+        }
+        dfs(dfs, idx + 1, cur_profit + profit[idx], cur_n - group[idx]);
+        dfs(dfs, idx + 1, cur_profit, cur_n);
+        return;
+    };
 
-  dfs(dfs, 0, 0, n);
-  return res;
+    dfs(dfs, 0, 0, n);
+    return res;
 }
 
 /*
@@ -448,27 +445,27 @@ f(0,n)
 */
 int32_t minInsertions(string s) {
 
-  int32_t n = s.size();
-  int32_t dp[n][n];
-  memset(dp, 0xff, sizeof(dp));
+    int32_t n = s.size();
+    int32_t dp[n][n];
+    memset(dp, 0xff, sizeof(dp));
 
-  auto dfs = [&](const auto &dfs, int32_t l, int32_t r) {
-    if (l >= r) {
-      return 0;
-    }
-    if (dp[l][r] != -1)
-      return dp[l][r];
+    auto dfs = [&](const auto &dfs, int32_t l, int32_t r) {
+        if (l >= r) {
+            return 0;
+        }
+        if (dp[l][r] != -1)
+            return dp[l][r];
 
-    int32_t res = INT32_MAX;
-    if (s[l] == s[r])
-      res = std::min(res, dfs(dfs, l + 1, r - 1));
-    else {
-      res = std::min(res, dfs(dfs, l + 1, r) + 1);
-      res = std::min(res, dfs(dfs, l, r - 1) + 1);
-    }
-    return dp[l][r] = res;
-  };
-  return dfs(dfs, 0, n - 1);
+        int32_t res = INT32_MAX;
+        if (s[l] == s[r])
+            res = std::min(res, dfs(dfs, l + 1, r - 1));
+        else {
+            res = std::min(res, dfs(dfs, l + 1, r) + 1);
+            res = std::min(res, dfs(dfs, l, r - 1) + 1);
+        }
+        return dp[l][r] = res;
+    };
+    return dfs(dfs, 0, n - 1);
 }
 /*
 https://leetcode.com/problems/maximum-width-of-binary-tree/
@@ -479,43 +476,43 @@ https://leetcode.com/problems/maximum-width-of-binary-tree/
 
 */
 int32_t widthOfBinaryTree(TreeNode *root) {
-  int32_t res = 0;
-  deque<pair<TreeNode *, uint32_t>> q;
-  q.push_back({root, 1});
-  while (!q.empty()) {
-    int32_t level = q.size();
-    int32_t width = q.back().second - q.front().second + 1;
-    res = max(res, width);
-    while (level--) {
-      auto cur = q.front();
-      q.pop_front();
-      if (cur.first->left != nullptr)
-        q.push_back({cur.first->left, cur.second * 2});
-      if (cur.first->right != nullptr)
-        q.push_back({cur.first->right, cur.second * 2 + 1});
+    int32_t res = 0;
+    deque<pair<TreeNode *, uint32_t>> q;
+    q.push_back({root, 1});
+    while (!q.empty()) {
+        int32_t level = q.size();
+        int32_t width = q.back().second - q.front().second + 1;
+        res = max(res, width);
+        while (level--) {
+            auto cur = q.front();
+            q.pop_front();
+            if (cur.first->left != nullptr)
+                q.push_back({cur.first->left, cur.second * 2});
+            if (cur.first->right != nullptr)
+                q.push_back({cur.first->right, cur.second * 2 + 1});
+        }
     }
-  }
-  return res;
+    return res;
 }
 
 /*
 https://leetcode.com/problems/longest-zigzag-path-in-a-binary-tree/
 */
 int32_t longestZigZag(TreeNode *root) {
-  int32_t res = 0;
+    int32_t res = 0;
 
-  auto dfs = [&](const auto &dfs, TreeNode *node) -> pair<int32_t, int32_t> {
-    if (node == nullptr)
-      return {-1, -1};
+    auto dfs = [&](const auto &dfs, TreeNode *node) -> pair<int32_t, int32_t> {
+        if (node == nullptr)
+            return {-1, -1};
 
-    int l = 1 + dfs(dfs, node->left).second;
-    int r = 1 + dfs(dfs, node->right).first;
-    res = std::max(res, std::max(l, r));
+        int l = 1 + dfs(dfs, node->left).second;
+        int r = 1 + dfs(dfs, node->right).first;
+        res = std::max(res, std::max(l, r));
 
-    return {l, r};
-  };
-  dfs(dfs, root);
-  return res;
+        return {l, r};
+    };
+    dfs(dfs, root);
+    return res;
 }
 
 /*
@@ -532,28 +529,28 @@ f(i,j) = max(f(i+1,j-1)+(a[i]==a[j]),f(i+1,j), f(i,j-1))
 f(1,1) => f(2,1), f(1,0);
 */
 int longestPalindromeSubseq(string s) {
-  size_t n = s.size();
-  vector<vector<int>> dp(n, vector<int>(n, -1));
+    size_t n = s.size();
+    vector<vector<int>> dp(n, vector<int>(n, -1));
 
-  auto dfs = [&](const auto &dfs, int l, int r) {
-    if (l > r)
-      return 0;
-    if (l == r)
-      return 1;
+    auto dfs = [&](const auto &dfs, int l, int r) {
+        if (l > r)
+            return 0;
+        if (l == r)
+            return 1;
 
-    if (dp[l][r] != -1)
-      return dp[l][r];
+        if (dp[l][r] != -1)
+            return dp[l][r];
 
-    int res = 0;
-    if (s[l] == s[r])
-      res = std::max(res, 2 + dfs(dfs, l + 1, r - 1));
-    else {
-      res = std::max(res, dfs(dfs, l + 1, r));
-      res = std::max(res, dfs(dfs, l, r - 1));
-    }
-    return dp[l][r] = res;
-  };
-  return dfs(dfs, 0, n - 1);
+        int res = 0;
+        if (s[l] == s[r])
+            res = std::max(res, 2 + dfs(dfs, l + 1, r - 1));
+        else {
+            res = std::max(res, dfs(dfs, l + 1, r));
+            res = std::max(res, dfs(dfs, l, r - 1));
+        }
+        return dp[l][r] = res;
+    };
+    return dfs(dfs, 0, n - 1);
 }
 
 /*
@@ -569,18 +566,18 @@ https://leetcode.com/problems/validate-stack-sequences/description/
 TODO:
 */
 bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
-  deque<int32_t> st;
+    deque<int32_t> st;
 
-  size_t i = 0;
-  for (auto &val : pushed) {
-    st.emplace_back(val);
+    size_t i = 0;
+    for (auto &val : pushed) {
+        st.emplace_back(val);
 
-    while (!st.empty() && st.back() == popped[i]) {
-      st.pop_back();
-      ++i;
+        while (!st.empty() && st.back() == popped[i]) {
+            st.pop_back();
+            ++i;
+        }
     }
-  }
-  return st.empty();
+    return st.empty();
 }
 
 /*------------------------------------------------------*/
@@ -591,24 +588,23 @@ bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
 
 static const string DIR{PROJECTDIR};
 
-template <typename TupleT, std::size_t... Is>
-auto call(TupleT tup, std::index_sequence<Is...>) {
-  return F(std::get<Is>(tup)...);
+template <typename TupleT, std::size_t... Is> auto call(TupleT tup, std::index_sequence<Is...>) {
+    return F(std::get<Is>(tup)...);
 }
 
 int main() {
-  string target_fun = NAME(TARGET);
-  string data_text = utility::readtxt(DIR + '/' + target_fun);
-  using p = decltype(utility::arguments(TARGET));
-  auto cases = utility::parse<p>(data_text);
-  size_t n = cases.size();
-  FOR(n) {
-    cout << "---Case #" << i << ": ---" << endl;
-    auto c = cases[i];
-    constexpr size_t tup_len = tuple_size_v<p> - 1;
-    auto res = call(c, std::make_index_sequence<tup_len>{});
-    print("Your Result: ", res);
-    print("Answer: ", get<tup_len>(c));
-  };
-  return 0;
+    string target_fun = NAME(TARGET);
+    string data_text = readtxt(DIR + '/' + target_fun);
+    using p = decltype(arguments(TARGET));
+    auto cases = parse<p>(data_text);
+    size_t n = cases.size();
+    for (int i = 0; i < n; ++i) {
+        cout << "---Case #" << i << ": ---" << endl;
+        auto c = cases[i];
+        constexpr size_t tup_len = tuple_size_v<p> - 1;
+        auto res = call(c, std::make_index_sequence<tup_len>{});
+        print("Your Result: ", res);
+        print("Answer: ", get<tup_len>(c));
+    };
+    return 0;
 }

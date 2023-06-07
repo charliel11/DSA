@@ -6,11 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CUDA_ARCHITECTURES 86)
 project(LeetCode LANGUAGES C CXX)
 
-set(GTest_DIR "external/install/lib/cmake/GTest")
+set(GTest_DIR "external/install/${CMAKE_BUILD_TYPE}/lib/cmake/GTest")
 find_package(GTest REQUIRED)
 
 # message("Your C++ compiler supports these C++ features:")
-
 # foreach(i ${CMAKE_CXX_COMPILE_FEATURES})
 # message("${i}")
 # endforeach()
