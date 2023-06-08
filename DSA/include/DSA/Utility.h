@@ -85,46 +85,46 @@ using namespace std;
 template <typename T> void print(T &arg) { cout << arg << '\n'; }
 
 inline void print(ListNode *arg) {
-    if (arg == nullptr) {
-        std::cout << "{}" << std::endl;
-        return;
-    }
-    std::cout << '{';
-    std::cout << arg->val;
+  if (arg == nullptr) {
+    std::cout << "{}" << std::endl;
+    return;
+  }
+  std::cout << '{';
+  std::cout << arg->val;
+  arg = arg->next;
+  while (arg != nullptr) {
+    std::cout << ',' << arg->val;
     arg = arg->next;
-    while (arg != nullptr) {
-        std::cout << ',' << arg->val;
-        arg = arg->next;
-    }
-    std::cout << '}' << '\n';
+  }
+  std::cout << '}' << '\n';
 }
 
 template <typename T> void print(vector<T> &arg) {
-    std::cout << '{';
-    auto it = arg.begin();
-    if (it != arg.end()) {
-        std::cout << *it;
-        for (++it; it != arg.end(); ++it)
-            std::cout << ',' << *it;
-    }
-    std::cout << '}' << '\n';
+  std::cout << '{';
+  auto it = arg.begin();
+  if (it != arg.end()) {
+    std::cout << *it;
+    for (++it; it != arg.end(); ++it)
+      std::cout << ',' << *it;
+  }
+  std::cout << '}' << '\n';
 }
 
 template <typename T> void print(vector<vector<T>> &arg) {
-    std::cout << '{' << '\n';
-    for (vector<T> &a : arg) {
-        print(a);
-    }
-    std::cout << '}' << '\n';
+  std::cout << '{' << '\n';
+  for (vector<T> &a : arg) {
+    print(a);
+  }
+  std::cout << '}' << '\n';
 }
 
 template <typename T> void print(pair<T, T> &arg) {
-    std::cout << '{' << arg.first << ',' << arg.second << '}' << '\n';
+  std::cout << '{' << arg.first << ',' << arg.second << '}' << '\n';
 }
 
 template <typename T, typename... Types> void print(T firstArg, Types... args) {
-    print(firstArg); // call print() for the first argument
-    print(args...);  // call print() for remaining arguments
+  print(firstArg); // call print() for the first argument
+  print(args...);  // call print() for remaining arguments
 }
 
 #pragma endregion

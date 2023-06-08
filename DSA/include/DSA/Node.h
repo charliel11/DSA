@@ -11,8 +11,7 @@ struct TreeNode {
   TreeNode *right;
   TreeNode() : val(0), left(nullptr), right(nullptr) {}
   TreeNode(int32_t x) : val(x), left(nullptr), right(nullptr) {}
-  TreeNode(int32_t x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {}
+  TreeNode(int32_t x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
 class Node {
@@ -21,8 +20,7 @@ public:
   vector<Node *> neighbors;
   Node() : val(0), neighbors{} {}
   Node(int32_t _val) : val(_val), neighbors{} {}
-  Node(int32_t _val, vector<Node *> _neighbors)
-      : val(_val), neighbors(_neighbors) {}
+  Node(int32_t _val, vector<Node *> _neighbors) : val(_val), neighbors(_neighbors) {}
 };
 
 Node *createGraph(vector<vector<int32_t>> adjList);

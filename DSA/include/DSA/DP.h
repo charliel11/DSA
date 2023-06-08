@@ -1,5 +1,6 @@
 #pragma once
 
+#include <DSA/PrefixSum.h>
 #include <algorithm>
 #include <cstring>
 #include <math.h>
@@ -7,7 +8,6 @@
 #include <string>
 #include <vector>
 
-#include <DSA/PrefixSum.h>
 
 using namespace std;
 
@@ -147,8 +147,7 @@ inline bool isScramble(string s1, string s2) {
   int32_t n1 = s1.size();
   int8_t dp[31][31][31];
   memset(dp, 0, sizeof(dp));
-  auto dfs = [&](auto const &dfs, int32_t l1, int32_t r1, int32_t l2,
-                 int32_t r2) -> bool {
+  auto dfs = [&](auto const &dfs, int32_t l1, int32_t r1, int32_t l2, int32_t r2) -> bool {
     if (l1 == r1)
       return s1[l1] == s2[l2];
 
@@ -160,13 +159,11 @@ inline bool isScramble(string s1, string s2) {
     for (int32_t i = 0; i < len; ++i) {
       // l1 = 0, r1 = 5 [XXXXXX]
       // i = 0,1,2,3,4
-      if (dfs(dfs, l1, l1 + i, l2, l2 + i) &&
-          dfs(dfs, l1 + i + 1, r1, l2 + i + 1, r2)) {
+      if (dfs(dfs, l1, l1 + i, l2, l2 + i) && dfs(dfs, l1 + i + 1, r1, l2 + i + 1, r2)) {
         dp[l1][r1][l2] = 1;
         break;
       }
-      if (dfs(dfs, l1, l1 + i, r2 - i, r2) &&
-          dfs(dfs, l1 + i + 1, r1, l2, r2 - i - 1)) {
+      if (dfs(dfs, l1, l1 + i, r2 - i, r2) && dfs(dfs, l1 + i + 1, r1, l2, r2 - i - 1)) {
         dp[l1][r1][l2] = 1;
         break;
       }
@@ -390,8 +387,7 @@ inline int maxScore(vector<int> &nums) {
             int next = (mask ^ (1 << i));
             next ^= (1 << j);
             // print(next);
-            res = std::max(res, idx * gcd(gcd, nums[i], nums[j]) +
-                                    dfs(dfs, next, idx + 1));
+            res = std::max(res, idx * gcd(gcd, nums[i], nums[j]) + dfs(dfs, next, idx + 1));
           }
         }
       }

@@ -127,8 +127,7 @@ inline int64_t countPairs(int n, vector<vector<int>> &edges) {
 https://johannesugb.github.io/cpu-programming/how-to-pass-lambda-functions-in-C++/
 */
 template <typename Func1, typename Func2>
-bool graph_dfs_acyclic(vector<vector<int>> &graph, const Func1 &merge,
-                       const Func2 &update) {
+bool graph_dfs_acyclic(vector<vector<int>> &graph, const Func1 &merge, const Func2 &update) {
   int n = graph.size();
   vector<int8_t> visit(n, 0);
   vector<int8_t> done(n, 0);
@@ -378,8 +377,7 @@ inline bool canFinish(int numCourses, vector<vector<int>> &prerequisites) {
 https://leetcode.com/problems/course-schedule-ii/
 O(V+E)
 */
-inline vector<int> findOrder(int numCourses,
-                             vector<vector<int>> &prerequisites) {
+inline vector<int> findOrder(int numCourses, vector<vector<int>> &prerequisites) {
   vector<int> out;
   // * Create graph
   vector<vector<int>> graph(numCourses);

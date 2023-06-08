@@ -1,6 +1,7 @@
 #include <DSA/UnionFind.h>
 #include <DSA/Utility.h>
 #include <DSA/parse.h>
+
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -14,6 +15,29 @@
 #define TARGET numOfMinutes
 
 using namespace std;
+
+/*
+https://leetcode.com/problems/count-negative-numbers-in-a-sorted-matrix/
+*/
+int countNegatives(vector<vector<int>> &grid) {
+  int n_r = grid.size();
+  int n_c = grid[0].size();
+
+  int res = 0;
+  int c = 0;
+  for (int r = 0; r < n_r; ++r) {
+    auto &row = grid[r];
+    if (row[0] < 0) {
+      res += (n_r - r) * n_c;
+      return res;
+    } else {
+      int idx = lower_bound(row.rbegin() + c, row.rend(), 0) - row.rbegin();
+      res += idx;
+      c = idx;
+    }
+  }
+  return res;
+}
 
 /*
 https://leetcode.com/problems/number-of-provinces/
@@ -42,8 +66,7 @@ int findCircleNum(vector<vector<int>> &isConnected) {
 /*
 https://leetcode.com/problems/time-needed-to-inform-all-employees/
 */
-int numOfMinutes(int n, int headID, vector<int> &manager,
-                 vector<int> &informTime) {
+int numOfMinutes(int n, int headID, vector<int> &manager, vector<int> &informTime) {
   vector<vector<int>> graph(n);
   for (int i = 0; i < n; ++i) {
     if (manager[i] == -1)
@@ -145,8 +168,7 @@ int shortestPathBinaryMatrix(vector<vector<int>> &grid) {}
 
 int stoneGameII(vector<int> &piles) {
   int n = piles.size();
-  vector<vector<vector<int>>> dp(
-      n, vector<vector<int>>(n + 1, vector<int>(2, -1)));
+  vector<vector<vector<int>>> dp(n, vector<vector<int>>(n + 1, vector<int>(2, -1)));
 
   auto dfs = [&](const auto &dfs, int p, int m, bool f) {
     if (p >= n)
@@ -277,8 +299,7 @@ vector<int> longestObstacleCourseAtEachPosition(vector<int> &obstacles) {
   vector<int> res(n);
 
   for (int i = 0; i < n; ++i) {
-    int idx =
-        upper_bound(stack.begin(), stack.end(), obstacles[i]) - stack.begin();
+    int idx = upper_bound(stack.begin(), stack.end(), obstacles[i]) - stack.begin();
     if (idx == stack.size())
       stack.push_back(obstacles[i]);
     else
@@ -302,7 +323,6 @@ vector<int> longestObstacleCourseAtEachPosition(vector<int> &obstacles) {
 {3,3,8}
 {3,6,8}
 {3,3,6,8}
-
 
 1 => 1
 2 => 2**(2 - 2) = 1
@@ -350,8 +370,7 @@ vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>> &edgeList,
   size_t en = edgeList.size();
   vector<int32_t> idx(qn);
   std::iota(idx.begin(), idx.end(), 0);
-  sort(idx.begin(), idx.end(),
-       [&queries](int a, int b) { return queries[a][2] < queries[b][2]; });
+  sort(idx.begin(), idx.end(), [&queries](int a, int b) { return queries[a][2] < queries[b][2]; });
   vector<bool> res(qn);
 
   int32_t j = 0;
@@ -421,8 +440,7 @@ int32_t profitableSchemes(int32_t n, int32_t minProfit, vector<int32_t> &group,
   int32_t pn = profit.size();
   int32_t res = 0;
 
-  auto dfs = [&](const auto &dfs, int32_t idx, int32_t cur_profit,
-                 int32_t cur_n) {
+  auto dfs = [&](const auto &dfs, int32_t idx, int32_t cur_profit, int32_t cur_n) {
     if (cur_n < 0)
       return;
     if (idx == pn) {
@@ -592,8 +610,7 @@ bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
 
 static const string DIR{PROJECTDIR};
 
-template <typename TupleT, std::size_t... Is>
-auto call(TupleT tup, std::index_sequence<Is...>) {
+template <typename TupleT, std::size_t... Is> auto call(TupleT tup, std::index_sequence<Is...>) {
   return F(std::get<Is>(tup)...);
 }
 
