@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <queue>
 #include <set>
 #include <string>
@@ -70,4 +71,37 @@ public:
   void checkOut(int id, string stationName, int t) {}
 
   double getAverageTime(string startStation, string endStation) {}
+};
+
+/*
+https://leetcode.com/problems/snapshot-array/
+RECAP: improve get by using binary search
+*/
+class SnapshotArray {
+  vector<vector<pair<int, int>>> _array;
+  int _snap_id = 0;
+
+public:
+  SnapshotArray(int length) : _array(length, vector<pair<int, int>>(1, pair<int, int>(0, 0))) {}
+
+  void set(int index, int val) {
+    auto &ele = _array[index];
+    if (ele.back().second == _snap_id)
+      ele.back().first = val;
+    else
+      ele.push_back({val, _snap_id});
+  }
+
+  int snap() {
+    ++_snap_id;
+    return _snap_id - 1;
+  }
+
+  int get(int index, int snap_id) {
+    for (auto e = _array[index].rbegin(); e != _array[index].rend(); ++e) {
+      if (e->second <= snap_id)
+        return e->first;
+    }
+    return -1;
+  }
 };

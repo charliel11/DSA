@@ -11,10 +11,70 @@
 #include <numeric>
 #include <queue>
 #include <stdint.h>
+#include <string>
 
-#define TARGET numOfMinutes
+#define TARGET maxValue
 
 using namespace std;
+
+/*
+https://leetcode.com/problems/maximum-value-at-a-given-index-in-a-bounded-array/
+*/
+int maxValue(int n, int index, int maxSum) {
+  auto is_valid = [&](int v) {
+    int64_t vv = v - 1;
+    int l = index - (vv - 1);
+    int r = index + (vv - 1);
+
+    int64_t sum = 0;
+    if (l >= 0)
+      sum += (1 + vv) * vv / 2;
+    else {
+      int64_t d = abs(l);
+      sum += (1 + d + vv) * (vv - d) / 2;
+    }
+
+    if (r < n)
+      sum += (1 + vv) * vv / 2;
+    else {
+      int64_t d = r - n + 1;
+      sum += (1 + d + vv) * (vv - d) / 2;
+    }
+
+    sum -= vv;
+    sum += n;
+    return sum <= maxSum;
+  };
+
+  int l = 0, r = maxSum;
+  while (l < r) {
+    int m = r - (r - l) / 2;
+    if (is_valid(m))
+      l = m;
+    else
+      r = m - 1;
+  }
+
+  return r;
+}
+
+vector<string> summaryRanges(vector<int> &nums) {
+  vector<string> res;
+  int n = nums.size();
+  for (int i = 0; i < n; ++i) {
+    int l = nums[i];
+    while (i + 1 < n && nums[i] + 1 == nums[i + 1])
+      ++i;
+
+    int r = nums[i];
+    if (l == r)
+      res.push_back(to_string(l));
+    else
+      res.push_back(to_string(l) + "->" + to_string(r));
+  }
+
+  return res;
+}
 
 /*
 https://leetcode.com/problems/count-negative-numbers-in-a-sorted-matrix/
