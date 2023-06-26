@@ -13,9 +13,69 @@
 #include <stdint.h>
 #include <string>
 
-#define TARGET maxValue
+#define TARGET minCost
 
 using namespace std;
+
+/*
+https://leetcode.com/problems/total-cost-to-hire-k-workers/
+*/
+int64_t totalCost(vector<int> &costs, int k, int candidates) {}
+
+/*
+https://leetcode.com/problems/minimum-cost-to-make-array-equal/
+
+L1 loss
+*/
+int64_t minCost(vector<int> &nums, vector<int> &cost) {
+  int n = nums.size();
+
+  vector<pair<int, int>> pairs;
+  pairs.reserve(n);
+  for (int i = 0; i < n; ++i)
+    pairs.push_back({nums[i], cost[i]});
+  sort(pairs.begin(), pairs.end());
+  if (pairs.front().first == pairs.back().first)
+    return 0;
+
+  int64_t sum = accumulate(cost.begin(), cost.end(), 0ll);
+  int64_t cur = 0, i = 0;
+  for (; i < n; ++i) {
+    cur += pairs[i].second;
+    if (cur >= (sum + 1) / 2)
+      break;
+  }
+
+  int64_t median = pairs[i].first;
+  int64_t res = 0;
+  for (int i = 0; i < n; ++i) {
+    res += std::abs((int64_t)nums[i] - median) * (int64_t)cost[i];
+  }
+  return res;
+}
+
+/*
+https://leetcode.com/problems/k-radius-subarray-averages/
+*/
+vector<int> getAverages(vector<int> &nums, int k) {
+  int n = nums.size();
+  vector<int> res(n, -1);
+  if (n < k || 2 * k + 1 > n)
+    return res;
+
+  int64_t sum = 0, d = 2 * k + 1;
+  int s = 0;
+  for (int i = 0; i < n; ++i) {
+    sum += nums[i];
+    if (i >= 2 * k) {
+      res[i - k] = sum / d;
+      sum -= nums[s];
+      ++s;
+    }
+  }
+
+  return res;
+}
 
 /*
 https://leetcode.com/problems/maximum-value-at-a-given-index-in-a-bounded-array/
