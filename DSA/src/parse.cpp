@@ -37,17 +37,6 @@ void parse_test_case(string &text, TreeNode *&res) {
 }
 
 /*
-[1,2,3,4,5,6]
-*/
-void parse_test_case(string &text, vector<int32_t> &res) {
-  stringstream ss;
-  text = text.substr(1, text.length() - 2);
-  ss << text;
-  while (ss >> text)
-    res.push_back(stoi(text));
-}
-
-/*
 [7,9,6,6,7,8,3,0,9,5]
 */
 void parse_test_case(string &text, ListNode *&res) {
@@ -93,17 +82,13 @@ void parse_test_case(string &text, vector<string> &res) {
     res.push_back(text);
 }
 
-void parse_test_case(string &text, int32_t &res) { res = stoi(text); }
-void parse_test_case(string &text, int64_t &res) { res = stoll(text); }
-void parse_test_case(string &text, uint64_t &res) { res = stoull(text); }
 void parse_test_case(string &text, string &res) {
   stringstream ss;
   ss << text;
   ss >> res;
 }
-void parse_test_case(string &text, bool &res) {
-  res = text == "true" ? true : false;
-}
+
+void parse_test_case(string &text, bool &res) { res = text == "true" ? true : false; }
 
 // [true, false]
 void parse_test_case(string &text, vector<bool> &res) {

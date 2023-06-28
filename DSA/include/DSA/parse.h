@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 // using namespace std;
@@ -12,7 +13,18 @@
 /*
 [1,2,3,4,5,6]
 */
-void parse_test_case(string &text, vector<int32_t> &res);
+template <typename T> void parse_test_case(string &text, vector<T> &res) {
+  stringstream ss;
+  text = text.substr(1, text.length() - 2);
+  ss << text;
+  while (ss >> text) {
+    if (std::is_same_v<T, int>)
+      res.push_back(stoi(text));
+    if (std::is_same_v<T, double>)
+      res.push_back(stod(text));
+  }
+}
+
 /*
 [[1,2,3],[4,5,6]]
 */
@@ -23,10 +35,18 @@ void parse_test_case(string &text, vector<vector<int32_t>> &res);
 void parse_test_case(string &text, vector<string> &res);
 void parse_test_case(string &text, vector<bool> &res);
 void parse_test_case(string &text, string &res);
-void parse_test_case(string &text, int32_t &res);
-void parse_test_case(string &text, int64_t &res);
-void parse_test_case(string &text, uint64_t &res);
 void parse_test_case(string &text, bool &res);
+
+template <typename T> void parse_test_case(string &text, T &res) {
+  if (std::is_same_v<T, int>)
+    res = stoi(text);
+  if (std::is_same_v<T, int64_t>)
+    res = stoll(text);
+  if (std::is_same_v<T, uint64_t>)
+    res = stoull(text);
+  if (std::is_same_v<T, double>)
+    res = stod(text);
+}
 
 /*
 [1,1,1,null,1,null,null,1,1,null,1]

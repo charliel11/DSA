@@ -13,9 +13,75 @@
 #include <stdint.h>
 #include <string>
 
-#define TARGET minCost
+#define TARGET maxProbability
 
 using namespace std;
+
+double ans;
+double mn = 1e-5;
+void f(vector<pair<int, double>> adj[], int node, int end, double sum, vector<int> &vis) {
+  if (sum <= mn)
+    return;
+  if (node == end) {
+    ans = max(ans, sum);
+    return;
+  }
+  vis[node] = 1;
+  for (auto it : adj[node]) {
+    if (!vis[it.first] && (sum * it.second) >= ans)
+      f(adj, it.first, end, sum * it.second, vis);
+  }
+  vis[node] = 0;
+}
+double maxProbability(int n, vector<vector<int>> &edges, vector<double> &succProb, int start,
+                      int end) {
+  vector<pair<int, double>> adj[n];
+  int i = 0;
+  for (auto edge : edges) {
+    adj[edge[0]].push_back({edge[1], succProb[i]});
+    adj[edge[1]].push_back({edge[0], succProb[i]});
+    i++;
+  }
+  vector<int> vis(n, 0);
+  ans = 0;
+  f(adj, start, end, 1, vis);
+  return ans;
+}
+
+/*
+https://leetcode.com/problems/path-with-maximum-probability/
+*/
+double maxProbability1(int n, vector<vector<int>> &edges, vector<double> &succProb, int start,
+                       int end) {
+
+  vector<vector<pair<int, double>>> adj_list(n);
+  for (int i = 0; i < edges.size(); ++i) {
+    auto e = edges[i];
+    adj_list[e[0]].push_back({e[1], succProb[i]});
+    adj_list[e[1]].push_back({e[0], succProb[i]});
+  }
+
+  vector<double> dp(n, -1.0);
+  vector<int8_t> is_visit(n, 0);
+  auto dfs = [&](const auto &dfs, int i) {
+    if (i == end)
+      return 1.0;
+
+    if (dp[i] != -1.0)
+      return dp[i];
+
+    double res = 0.0;
+    is_visit[i] = 1;
+    for (auto next : adj_list[i]) {
+      if (!is_visit[next.first]) {
+        res = std::max(res, next.second * dfs(dfs, next.first));
+      }
+    }
+    is_visit[i] = 0;
+    return dp[i] = res;
+  };
+  return dfs(dfs, start);
+}
 
 /*
 https://leetcode.com/problems/total-cost-to-hire-k-workers/
