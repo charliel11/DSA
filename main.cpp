@@ -3,7 +3,9 @@
 #include <DSA/parse.h>
 
 #include <algorithm>
+#include <climits>
 #include <cmath>
+#include <cstdint>
 #include <cstring>
 #include <deque>
 #include <functional>
@@ -17,43 +19,11 @@
 
 using namespace std;
 
-double ans;
-double mn = 1e-5;
-void f(vector<pair<int, double>> adj[], int node, int end, double sum, vector<int> &vis) {
-  if (sum <= mn)
-    return;
-  if (node == end) {
-    ans = max(ans, sum);
-    return;
-  }
-  vis[node] = 1;
-  for (auto it : adj[node]) {
-    if (!vis[it.first] && (sum * it.second) >= ans)
-      f(adj, it.first, end, sum * it.second, vis);
-  }
-  vis[node] = 0;
-}
-double maxProbability(int n, vector<vector<int>> &edges, vector<double> &succProb, int start,
-                      int end) {
-  vector<pair<int, double>> adj[n];
-  int i = 0;
-  for (auto edge : edges) {
-    adj[edge[0]].push_back({edge[1], succProb[i]});
-    adj[edge[1]].push_back({edge[0], succProb[i]});
-    i++;
-  }
-  vector<int> vis(n, 0);
-  ans = 0;
-  f(adj, start, end, 1, vis);
-  return ans;
-}
-
 /*
 https://leetcode.com/problems/path-with-maximum-probability/
 */
-double maxProbability1(int n, vector<vector<int>> &edges, vector<double> &succProb, int start,
-                       int end) {
-
+double maxProbability(int n, vector<vector<int>> &edges,
+                      vector<double> &succProb, int start, int end) {
   vector<vector<pair<int, double>>> adj_list(n);
   for (int i = 0; i < edges.size(); ++i) {
     auto e = edges[i];
@@ -61,26 +31,22 @@ double maxProbability1(int n, vector<vector<int>> &edges, vector<double> &succPr
     adj_list[e[1]].push_back({e[0], succProb[i]});
   }
 
-  vector<double> dp(n, -1.0);
-  vector<int8_t> is_visit(n, 0);
-  auto dfs = [&](const auto &dfs, int i) {
-    if (i == end)
-      return 1.0;
+  vector<double> prob(n, 0);
+  prob[start] = 1;
 
-    if (dp[i] != -1.0)
-      return dp[i];
-
-    double res = 0.0;
-    is_visit[i] = 1;
-    for (auto next : adj_list[i]) {
-      if (!is_visit[next.first]) {
-        res = std::max(res, next.second * dfs(dfs, next.first));
+  queue<int> q;
+  q.push(start);
+  while (!q.empty()) {
+    int cur = q.front();
+    q.pop();
+    for (auto next : adj_list[cur]) {
+      if (prob[cur] * next.second > prob[next.first]) {
+        prob[next.first] = prob[cur] * next.second;
+        q.push(next.first);
       }
     }
-    is_visit[i] = 0;
-    return dp[i] = res;
-  };
-  return dfs(dfs, start);
+  }
+  return prob[end];
 }
 
 /*
@@ -252,7 +218,8 @@ int findCircleNum(vector<vector<int>> &isConnected) {
 /*
 https://leetcode.com/problems/time-needed-to-inform-all-employees/
 */
-int numOfMinutes(int n, int headID, vector<int> &manager, vector<int> &informTime) {
+int numOfMinutes(int n, int headID, vector<int> &manager,
+                 vector<int> &informTime) {
   vector<vector<int>> graph(n);
   for (int i = 0; i < n; ++i) {
     if (manager[i] == -1)
@@ -354,7 +321,8 @@ int shortestPathBinaryMatrix(vector<vector<int>> &grid) {}
 
 int stoneGameII(vector<int> &piles) {
   int n = piles.size();
-  vector<vector<vector<int>>> dp(n, vector<vector<int>>(n + 1, vector<int>(2, -1)));
+  vector<vector<vector<int>>> dp(
+      n, vector<vector<int>>(n + 1, vector<int>(2, -1)));
 
   auto dfs = [&](const auto &dfs, int p, int m, bool f) {
     if (p >= n)
@@ -485,7 +453,8 @@ vector<int> longestObstacleCourseAtEachPosition(vector<int> &obstacles) {
   vector<int> res(n);
 
   for (int i = 0; i < n; ++i) {
-    int idx = upper_bound(stack.begin(), stack.end(), obstacles[i]) - stack.begin();
+    int idx =
+        upper_bound(stack.begin(), stack.end(), obstacles[i]) - stack.begin();
     if (idx == stack.size())
       stack.push_back(obstacles[i]);
     else
@@ -556,7 +525,8 @@ vector<bool> distanceLimitedPathsExist(int n, vector<vector<int>> &edgeList,
   size_t en = edgeList.size();
   vector<int32_t> idx(qn);
   std::iota(idx.begin(), idx.end(), 0);
-  sort(idx.begin(), idx.end(), [&queries](int a, int b) { return queries[a][2] < queries[b][2]; });
+  sort(idx.begin(), idx.end(),
+       [&queries](int a, int b) { return queries[a][2] < queries[b][2]; });
   vector<bool> res(qn);
 
   int32_t j = 0;
@@ -626,7 +596,8 @@ int32_t profitableSchemes(int32_t n, int32_t minProfit, vector<int32_t> &group,
   int32_t pn = profit.size();
   int32_t res = 0;
 
-  auto dfs = [&](const auto &dfs, int32_t idx, int32_t cur_profit, int32_t cur_n) {
+  auto dfs = [&](const auto &dfs, int32_t idx, int32_t cur_profit,
+                 int32_t cur_n) {
     if (cur_n < 0)
       return;
     if (idx == pn) {
@@ -796,7 +767,8 @@ bool validateStackSequences(vector<int32_t> &pushed, vector<int32_t> &popped) {
 
 static const string DIR{PROJECTDIR};
 
-template <typename TupleT, std::size_t... Is> auto call(TupleT tup, std::index_sequence<Is...>) {
+template <typename TupleT, std::size_t... Is>
+auto call(TupleT tup, std::index_sequence<Is...>) {
   return F(std::get<Is>(tup)...);
 }
 
