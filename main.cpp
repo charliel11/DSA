@@ -12,6 +12,7 @@
 #include <iostream>
 #include <numeric>
 #include <queue>
+#include <set>
 #include <stdint.h>
 #include <string>
 
@@ -22,8 +23,8 @@ using namespace std;
 /*
 https://leetcode.com/problems/path-with-maximum-probability/
 */
-double maxProbability(int n, vector<vector<int>> &edges,
-                      vector<double> &succProb, int start, int end) {
+double maxProbability_spfa(int n, vector<vector<int>> &edges,
+                           vector<double> &succProb, int start, int end) {
   vector<vector<pair<int, double>>> adj_list(n);
   for (int i = 0; i < edges.size(); ++i) {
     auto e = edges[i];
@@ -43,6 +44,65 @@ double maxProbability(int n, vector<vector<int>> &edges,
       if (prob[cur] * next.second > prob[next.first]) {
         prob[next.first] = prob[cur] * next.second;
         q.push(next.first);
+      }
+    }
+  }
+  return prob[end];
+}
+
+double maxProbability_pq(int n, vector<vector<int>> &edges,
+                         vector<double> &succProb, int start, int end) {
+  vector<vector<pair<int, double>>> adj_list(n);
+  for (int i = 0; i < edges.size(); ++i) {
+    auto e = edges[i];
+    adj_list[e[0]].push_back({e[1], succProb[i]});
+    adj_list[e[1]].push_back({e[0], succProb[i]});
+  }
+
+  vector<double> prob(n, 0);
+  vector<int8_t> is_visit(n, 0);
+  priority_queue<pair<double, int>> pq;
+  pq.push({1, start});
+  while (!pq.empty()) {
+    auto [p, cur] = pq.top();
+    pq.pop();
+    if (cur == end)
+      return p;
+
+    is_visit[cur] = 1;
+
+    for (auto next : adj_list[cur]) {
+      if (!is_visit[next.first])
+        pq.push({p * next.second, next.first});
+    }
+  }
+  return 0;
+}
+
+double maxProbability(int n, vector<vector<int>> &edges,
+                      vector<double> &succProb, int start, int end) {
+  vector<vector<pair<int, double>>> adj_list(n);
+  for (int i = 0; i < edges.size(); ++i) {
+    auto e = edges[i];
+    adj_list[e[0]].push_back({e[1], succProb[i]});
+    adj_list[e[1]].push_back({e[0], succProb[i]});
+  }
+
+  vector<double> prob(n, 0);
+  vector<int8_t> is_visit(n, 0);
+  prob[start] = 1;
+  int cur = start;
+  while (!is_visit[cur]) {
+    is_visit[cur] = 1;
+    for (auto next : adj_list[cur]) {
+      prob[next.first] = std::max(prob[next.first], prob[cur] * next.second);
+    }
+
+    int p = INT_MIN;
+    for (int i = 0; i < n; ++i) {
+      if (!is_visit[i] && (prob[i] > p)) {
+        cur = i;
+        p = prob[i];
       }
     }
   }
