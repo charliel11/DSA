@@ -3,6 +3,7 @@
 #include <DSA/parse.h>
 
 #include <algorithm>
+#include <assert.h>
 #include <climits>
 #include <cmath>
 #include <cstdint>
@@ -15,97 +16,142 @@
 #include <set>
 #include <stdint.h>
 #include <string>
+#include <type_traits>
 
 #define TARGET maxProbability
 
 using namespace std;
 
+vector<int> restore_path(int s, int t, vector<int> const &p) {
+  vector<int> path;
+
+  for (int v = t; v != s; v = p[v])
+    path.push_back(v);
+  path.push_back(s);
+
+  reverse(path.begin(), path.end());
+  return path;
+}
+
+template <typename T, typename Relax, typename Select>
+void dijkstra(vector<vector<pair<T, int>>> &adj_list, int start,
+              const Relax &relax, const Select &select) {
+
+  while (true) {
+    int cur = select();
+    if (cur == -1)
+      break;
+
+    for (auto &next : adj_list[cur]) {
+      relax(cur, next);
+    }
+  }
+  return;
+}
+
+template <typename T, class Compare = less<T>, class Product = plus<T>>
+void dijkstra_origin(vector<vector<pair<T, int>>> &adj_list, int start,
+                     vector<T> &shortest_path, vector<int> &predecessor) {
+
+  int n = adj_list.size();
+  vector<int8_t> seen(n, 0);
+  auto select = [&]() {
+    int res = -1;
+    for (int i = 0; i < seen.size(); ++i) {
+      if (!seen[i] &&
+          (res == -1 || Compare{}(shortest_path[i], shortest_path[res])))
+        res = i;
+    }
+    if (res != -1)
+      seen[res] = 1;
+    return res;
+  };
+
+  auto relax = [&](int cur, pair<T, int> next) {
+    if (Compare{}(Product{}(shortest_path[cur], next.first),
+                  shortest_path[next.second])) {
+      shortest_path[next.second] = shortest_path[cur] * next.first;
+      predecessor[next.second] = cur;
+    }
+  };
+
+  dijkstra(adj_list, start, relax, select);
+}
+
+template <typename T, class Compare = less<T>, class Product = plus<T>>
+void dijkstra_pq(vector<vector<pair<T, int>>> &adj_list, int start,
+                 vector<T> &shortest_path, vector<int> &predecessor) {
+
+  priority_queue<pair<double, int>> pq;
+  pq.push({shortest_path[start], start});
+
+  auto select = [&]() {
+    if (pq.empty())
+      return -1;
+
+    int res = pq.top().second;
+    pq.pop();
+    return res;
+  };
+
+  auto relax = [&](int cur, pair<T, int> next) {
+    if (Compare{}(Product{}(shortest_path[cur], next.first),
+                  shortest_path[next.second])) {
+      shortest_path[next.second] = Product{}(shortest_path[cur], next.first);
+      predecessor[next.second] = cur;
+      pq.push({shortest_path[next.second], next.second});
+    }
+  };
+
+  dijkstra(adj_list, start, relax, select);
+}
+
+template <typename T, class Compare = less<T>, class Product = plus<T>>
+void dijkstra_set(vector<vector<pair<T, int>>> &adj_list, int start,
+                  vector<T> &shortest_path, vector<int> &predecessor) {
+
+  set<pair<double, int>, std::greater<>> s;
+  s.insert({shortest_path[start], start});
+
+  auto select = [&]() {
+    if (s.empty())
+      return -1;
+    int res = s.begin()->second;
+    s.erase(s.begin());
+    return res;
+  };
+
+  auto relax = [&](int cur, pair<double, int> next) {
+    if (Compare{}(Product{}(shortest_path[cur], next.first),
+                  shortest_path[next.second])) {
+      s.erase({shortest_path[next.second], next.second});
+      shortest_path[next.second] = Product{}(shortest_path[cur], next.first);
+      predecessor[next.second] = cur;
+      s.insert({shortest_path[next.second], next.second});
+    }
+  };
+
+  dijkstra(adj_list, start, relax, select);
+}
+
 /*
 https://leetcode.com/problems/path-with-maximum-probability/
 */
-double maxProbability_spfa(int n, vector<vector<int>> &edges,
-                           vector<double> &succProb, int start, int end) {
-  vector<vector<pair<int, double>>> adj_list(n);
-  for (int i = 0; i < edges.size(); ++i) {
-    auto e = edges[i];
-    adj_list[e[0]].push_back({e[1], succProb[i]});
-    adj_list[e[1]].push_back({e[0], succProb[i]});
-  }
-
-  vector<double> prob(n, 0);
-  prob[start] = 1;
-
-  queue<int> q;
-  q.push(start);
-  while (!q.empty()) {
-    int cur = q.front();
-    q.pop();
-    for (auto next : adj_list[cur]) {
-      if (prob[cur] * next.second > prob[next.first]) {
-        prob[next.first] = prob[cur] * next.second;
-        q.push(next.first);
-      }
-    }
-  }
-  return prob[end];
-}
-
-double maxProbability_pq(int n, vector<vector<int>> &edges,
-                         vector<double> &succProb, int start, int end) {
-  vector<vector<pair<int, double>>> adj_list(n);
-  for (int i = 0; i < edges.size(); ++i) {
-    auto e = edges[i];
-    adj_list[e[0]].push_back({e[1], succProb[i]});
-    adj_list[e[1]].push_back({e[0], succProb[i]});
-  }
-
-  vector<double> prob(n, 0);
-  vector<int8_t> is_visit(n, 0);
-  priority_queue<pair<double, int>> pq;
-  pq.push({1, start});
-  while (!pq.empty()) {
-    auto [p, cur] = pq.top();
-    pq.pop();
-    if (cur == end)
-      return p;
-
-    is_visit[cur] = 1;
-
-    for (auto next : adj_list[cur]) {
-      if (!is_visit[next.first])
-        pq.push({p * next.second, next.first});
-    }
-  }
-  return 0;
-}
-
 double maxProbability(int n, vector<vector<int>> &edges,
                       vector<double> &succProb, int start, int end) {
-  vector<vector<pair<int, double>>> adj_list(n);
+
+  vector<vector<pair<double, int>>> adj_list(n);
   for (int i = 0; i < edges.size(); ++i) {
     auto e = edges[i];
-    adj_list[e[0]].push_back({e[1], succProb[i]});
-    adj_list[e[1]].push_back({e[0], succProb[i]});
+    adj_list[e[0]].push_back({succProb[i], e[1]});
+    adj_list[e[1]].push_back({succProb[i], e[0]});
   }
 
   vector<double> prob(n, 0);
-  vector<int8_t> is_visit(n, 0);
+  vector<int> pred(n, -1);
   prob[start] = 1;
-  int cur = start;
-  while (!is_visit[cur]) {
-    is_visit[cur] = 1;
-    for (auto next : adj_list[cur]) {
-      prob[next.first] = std::max(prob[next.first], prob[cur] * next.second);
-    }
-
-    int p = INT_MIN;
-    for (int i = 0; i < n; ++i) {
-      if (!is_visit[i] && (prob[i] > p)) {
-        cur = i;
-        p = prob[i];
-      }
-    }
-  }
+  dijkstra_pq<double, greater<double>, multiplies<double>>(adj_list, start,
+                                                           prob, pred);
   return prob[end];
 }
 
