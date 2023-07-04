@@ -1,3 +1,4 @@
+#include <DSA/Graph.h>
 #include <DSA/UnionFind.h>
 #include <DSA/Utility.h>
 #include <DSA/parse.h>
@@ -22,118 +23,6 @@
 
 using namespace std;
 
-vector<int> restore_path(int s, int t, vector<int> const &p) {
-  vector<int> path;
-
-  for (int v = t; v != s; v = p[v])
-    path.push_back(v);
-  path.push_back(s);
-
-  reverse(path.begin(), path.end());
-  return path;
-}
-
-template <typename T, typename Relax, typename Select>
-void dijkstra(vector<vector<pair<T, int>>> &adj_list, int start,
-              const Relax &relax, const Select &select) {
-
-  while (true) {
-    int cur = select();
-    if (cur == -1)
-      break;
-
-    for (auto &next : adj_list[cur]) {
-      relax(cur, next);
-    }
-  }
-  return;
-}
-
-template <typename T, class Compare = less<T>, class Product = plus<T>>
-void dijkstra_origin(vector<vector<pair<T, int>>> &adj_list, int start,
-                     vector<T> &shortest_path, vector<int> &predecessor) {
-
-  int n = adj_list.size();
-  vector<int8_t> seen(n, 0);
-  auto select = [&]() {
-    int res = -1;
-    for (int i = 0; i < seen.size(); ++i) {
-      if (!seen[i] &&
-          (res == -1 || Compare{}(shortest_path[i], shortest_path[res])))
-        res = i;
-    }
-    if (res != -1)
-      seen[res] = 1;
-    return res;
-  };
-
-  auto relax = [&](int cur, pair<T, int> next) {
-    if (Compare{}(Product{}(shortest_path[cur], next.first),
-                  shortest_path[next.second])) {
-      shortest_path[next.second] = shortest_path[cur] * next.first;
-      predecessor[next.second] = cur;
-    }
-  };
-
-  dijkstra(adj_list, start, relax, select);
-}
-
-template <typename T, class Compare = less<T>, class Product = plus<T>>
-void dijkstra_pq(vector<vector<pair<T, int>>> &adj_list, int start,
-                 vector<T> &shortest_path, vector<int> &predecessor) {
-
-  priority_queue<pair<double, int>> pq;
-  pq.push({shortest_path[start], start});
-
-  auto select = [&]() {
-    if (pq.empty())
-      return -1;
-
-    int res = pq.top().second;
-    pq.pop();
-    return res;
-  };
-
-  auto relax = [&](int cur, pair<T, int> next) {
-    if (Compare{}(Product{}(shortest_path[cur], next.first),
-                  shortest_path[next.second])) {
-      shortest_path[next.second] = Product{}(shortest_path[cur], next.first);
-      predecessor[next.second] = cur;
-      pq.push({shortest_path[next.second], next.second});
-    }
-  };
-
-  dijkstra(adj_list, start, relax, select);
-}
-
-template <typename T, class Compare = less<T>, class Product = plus<T>>
-void dijkstra_set(vector<vector<pair<T, int>>> &adj_list, int start,
-                  vector<T> &shortest_path, vector<int> &predecessor) {
-
-  set<pair<double, int>, std::greater<>> s;
-  s.insert({shortest_path[start], start});
-
-  auto select = [&]() {
-    if (s.empty())
-      return -1;
-    int res = s.begin()->second;
-    s.erase(s.begin());
-    return res;
-  };
-
-  auto relax = [&](int cur, pair<double, int> next) {
-    if (Compare{}(Product{}(shortest_path[cur], next.first),
-                  shortest_path[next.second])) {
-      s.erase({shortest_path[next.second], next.second});
-      shortest_path[next.second] = Product{}(shortest_path[cur], next.first);
-      predecessor[next.second] = cur;
-      s.insert({shortest_path[next.second], next.second});
-    }
-  };
-
-  dijkstra(adj_list, start, relax, select);
-}
-
 /*
 https://leetcode.com/problems/path-with-maximum-probability/
 */
@@ -150,8 +39,9 @@ double maxProbability(int n, vector<vector<int>> &edges,
   vector<double> prob(n, 0);
   vector<int> pred(n, -1);
   prob[start] = 1;
-  dijkstra_pq<double, greater<double>, multiplies<double>>(adj_list, start,
-                                                           prob, pred);
+  dsa::graph::shortest_path::dijkstra_pq<double, greater<double>,
+                                         multiplies<double>>(adj_list, start,
+                                                             prob, pred);
   return prob[end];
 }
 
@@ -211,7 +101,6 @@ vector<int> getAverages(vector<int> &nums, int k) {
       ++s;
     }
   }
-
   return res;
 }
 
