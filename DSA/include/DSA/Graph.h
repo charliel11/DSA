@@ -16,7 +16,7 @@ namespace graph {
 namespace shortest_path {
 
 // TODO: there is no path from s to t
-vector<int> restore_path(int s, int t, vector<int> const &p) {
+inline vector<int> restore_path(int s, int t, vector<int> const &p) {
   vector<int> path;
 
   for (int v = t; v != s; v = p[v])
@@ -128,7 +128,84 @@ void dijkstra_set(vector<vector<pair<T, int>>> &adj_list, int start,
   dijkstra(adj_list, start, relax, select);
 }
 
+/*
+https://leetcode.com/problems/path-with-maximum-probability/
+*/
+inline double maxProbability(int n, vector<vector<int>> &edges,
+                             vector<double> &succProb, int start, int end) {
+
+  vector<vector<pair<double, int>>> adj_list(n);
+  for (int i = 0; i < edges.size(); ++i) {
+    auto e = edges[i];
+    adj_list[e[0]].push_back({succProb[i], e[1]});
+    adj_list[e[1]].push_back({succProb[i], e[0]});
+  }
+
+  vector<double> prob(n, 0);
+  vector<int> pred(n, -1);
+  prob[start] = 1;
+  dsa::graph::shortest_path::dijkstra_pq<double, greater<double>,
+                                         multiplies<double>>(adj_list, start,
+                                                             prob, pred);
+  return prob[end];
+}
 } // namespace shortest_path
+
+namespace connected_component {
+
+inline int max_connected_component(vector<vector<int>> adj_list) {
+  int n = adj_list.size();
+  vector<int> v(n, -1);
+
+  auto dfs = [&](const auto &dfs, int i, int root) -> int {
+    v[i] = root;
+    int cnt = 1;
+    for (int next : adj_list[i]) {
+      if (v[next] != root) {
+        cnt += dfs(dfs, next, root);
+      }
+    }
+    return cnt;
+  };
+
+  int res = 0;
+  for (int i = 0; i < n; ++i) {
+    if (v[i] == -1)
+      res = std::max(res, dfs(dfs, i, i));
+  }
+  return res;
+}
+
+/*
+https://leetcode.com/problems/detonate-the-maximum-bombs/
+*/
+inline int maximumDetonation(vector<vector<int>> &bombs) {
+  int n = bombs.size();
+  vector<vector<int>> adj_list(n);
+
+  int64_t r1, r2, dist;
+  for (int i = 0; i < n - 1; ++i) {
+    r1 = bombs[i][2];
+    r1 *= r1;
+    for (int j = i + 1; j < n; ++j) {
+      int64_t dx = bombs[i][0] - bombs[j][0];
+      int64_t dy = bombs[i][1] - bombs[j][1];
+      dist = (dx * dx) + (dy * dy);
+      if (dist <= r1) {
+        adj_list[i].push_back(j);
+      }
+      r2 = bombs[j][2];
+      r2 *= r2;
+      if (dist <= r2) {
+        adj_list[j].push_back(i);
+      }
+    }
+  }
+
+  return max_connected_component(adj_list);
+}
+
+} // namespace connected_component
 
 /*
 https://leetcode.com/problems/minimum-score-of-a-path-between-two-cities/
@@ -240,46 +317,6 @@ inline int64_t countPairs(int n, vector<vector<int>> &edges) {
 
   return res;
 }
-
-/*
-https://johannesugb.github.io/cpu-programming/how-to-pass-lambda-functions-in-C++/
-*/
-template <typename Func1, typename Func2>
-bool graph_dfs_acyclic(vector<vector<int>> &graph, const Func1 &merge,
-                       const Func2 &update) {
-  int n = graph.size();
-  vector<int8_t> visit(n, 0);
-  vector<int8_t> done(n, 0);
-  bool acyclic = true;
-
-  auto dfs = [&](const auto &dfs, int i) -> bool {
-    if (!acyclic)
-      return acyclic;
-    if (done[i] == 1)
-      return true;
-    done[i] = visit[i] = 1;
-    for (int next : graph[i]) {
-      if (visit[next] == 1 || !dfs(dfs, next)) {
-        return acyclic = false;
-      }
-      merge(i, next);
-    }
-    update(i);
-    visit[i] = 0;
-    return acyclic;
-  };
-
-  for (int i = 0; i < n; ++i) {
-    if (!done[i] && !dfs(dfs, i))
-      return false;
-  }
-
-  return true;
-}
-
-/*
-TODO: graph_bfs_XXX
-*/
 
 /*
 https://leetcode.com/problems/longest-cycle-in-a-graph/
@@ -437,13 +474,56 @@ inline int numEnclaves(vector<vector<int>> &grid) {
         res += area;
     }
   }
+
   return res;
 }
 
 /*
+https://johannesugb.github.io/cpu-programming/how-to-pass-lambda-functions-in-C++/
+
+acyclic and directed graph => multi-root tree
+*/
+template <typename Func1, typename Func2>
+bool is_acyclic_dfs(vector<vector<int>> &adj_list, const Func1 &merge,
+                    const Func2 &update) {
+  int n = adj_list.size();
+  vector<int8_t> recursion_stack(n, 0);
+  vector<int8_t> visit(n, 0);
+  bool acyclic = true;
+
+  auto dfs = [&](const auto &dfs, int i) -> bool {
+    if (!acyclic)
+      return acyclic;
+    if (visit[i] == 1)
+      return true;
+    visit[i] = recursion_stack[i] = 1;
+    for (int next : adj_list[i]) {
+      if (recursion_stack[next] == 1 || !dfs(dfs, next)) {
+        return acyclic = false;
+      }
+      merge(i, next); // merge current node and child node result
+    }
+    update(i);              // update current node result
+    recursion_stack[i] = 0; // pop out
+    return acyclic;
+  };
+
+  for (int i = 0; i < n; ++i) {
+    if (visit[i] == 0 && !dfs(dfs, i))
+      return false;
+  }
+
+  return true;
+}
+
+/*
+TODO: graph_bfs_XXX
+*/
+
+/*
 https://leetcode.com/problems/largest-color-value-in-a-directed-graph/
 
-RECAP:
+acyclic and directed graph => multi-root tree
 */
 inline int largestPathValue(string colors, vector<vector<int>> &edges) {
   size_t n = colors.size();
@@ -460,8 +540,10 @@ inline int largestPathValue(string colors, vector<vector<int>> &edges) {
     for (int j = 0; j < 26; ++j)
       cnt[i][j] = max(cnt[i][j], cnt[next][j]);
   };
+
   auto update = [&](int i) { ++cnt[i][colors[i] - 'a']; };
-  if (!graph_dfs_acyclic(adj_list, merge, update))
+
+  if (!is_acyclic_dfs(adj_list, merge, update))
     return -1;
 
   int res = -1;
@@ -489,7 +571,7 @@ inline bool canFinish(int numCourses, vector<vector<int>> &prerequisites) {
 
   auto merge = [&](int i, int next) {};
   auto update = [&](int i) {};
-  return graph_dfs_acyclic(graph, merge, update);
+  return is_acyclic_dfs(graph, merge, update);
 }
 
 /* 210. Course Schedule II
@@ -506,7 +588,7 @@ inline vector<int> findOrder(int numCourses,
 
   auto merge = [&](int i, int next) {};
   auto update = [&](int i) { out.push_back(i); };
-  graph_dfs_acyclic(graph, merge, update);
+  is_acyclic_dfs(graph, merge, update);
   reverse(out.begin(), out.end());
   return out;
 }

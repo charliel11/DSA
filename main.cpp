@@ -19,31 +19,9 @@
 #include <string>
 #include <type_traits>
 
-#define TARGET maxProbability
+#define TARGET minCost
 
 using namespace std;
-
-/*
-https://leetcode.com/problems/path-with-maximum-probability/
-*/
-double maxProbability(int n, vector<vector<int>> &edges,
-                      vector<double> &succProb, int start, int end) {
-
-  vector<vector<pair<double, int>>> adj_list(n);
-  for (int i = 0; i < edges.size(); ++i) {
-    auto e = edges[i];
-    adj_list[e[0]].push_back({succProb[i], e[1]});
-    adj_list[e[1]].push_back({succProb[i], e[0]});
-  }
-
-  vector<double> prob(n, 0);
-  vector<int> pred(n, -1);
-  prob[start] = 1;
-  dsa::graph::shortest_path::dijkstra_pq<double, greater<double>,
-                                         multiplies<double>>(adj_list, start,
-                                                             prob, pred);
-  return prob[end];
-}
 
 /*
 https://leetcode.com/problems/total-cost-to-hire-k-workers/
@@ -235,81 +213,6 @@ int numOfMinutes(int n, int headID, vector<int> &manager,
   };
 
   return dfs(dfs, headID);
-}
-
-int maximumChild(vector<vector<int>> &graph) {
-  int n = graph.size();
-  vector<int> v(n, -1);
-  auto dfs = [&](const auto &dfs, int cur, int root) -> int {
-    v[cur] = root;
-    int cnt = 1;
-    for (int next : graph[cur]) {
-      if (v[next] == root)
-        continue;
-      cnt += dfs(dfs, next, root);
-    }
-    return cnt;
-  };
-
-  int res = 0;
-  for (int i = 0; i < n; ++i) {
-    if (v[i] > -1)
-      continue;
-    res = std::max(res, dfs(dfs, i, i));
-  }
-  return res;
-}
-
-/*
-https://leetcode.com/problems/detonate-the-maximum-bombs/
-*/
-int maximumDetonation(vector<vector<int>> &bombs) {
-  int n = bombs.size();
-  vector<vector<int>> graph(n);
-
-  int64_t r1, r2, dist;
-  for (int i = 0; i < n - 1; ++i) {
-    r1 = bombs[i][2];
-    r1 *= r1;
-    for (int j = i + 1; j < n; ++j) {
-      int64_t dx = bombs[i][0] - bombs[j][0];
-      int64_t dy = bombs[i][1] - bombs[j][1];
-      dist = (dx * dx) + (dy * dy);
-      if (dist <= r1) {
-        graph[i].push_back(j);
-      }
-      r2 = bombs[j][2];
-      r2 *= r2;
-      if (dist <= r2) {
-        graph[j].push_back(i);
-      }
-    }
-  }
-
-  auto dfs = [&](const auto &dfs, vector<int> &edge, vector<int8_t> &v) {
-    if (edge.empty())
-      return 0;
-
-    int cnt = 0;
-    for (auto e : edge) {
-      if (!v[e]) {
-        v[e] = 1;
-        cnt += 1 + dfs(dfs, graph[e], v);
-      };
-    }
-
-    return cnt;
-  };
-
-  int res = 0;
-  for (int i = 0; i < n; ++i) {
-    vector<int8_t> v(n, 0);
-    v[i] = 1;
-    res = std::max(res, 1 + dfs(dfs, graph[i], v));
-    v[i] = 0;
-  }
-
-  return res;
 }
 
 int shortestPathBinaryMatrix(vector<vector<int>> &grid) {}
