@@ -26,7 +26,8 @@ inline int32_t search(vector<int32_t> &nums, int32_t target) {
   return -1;
 }
 
-inline int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums, int32_t target) {
+inline int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums,
+                                         int32_t target) {
   int32_t left = 0, right = nums.size() - 1;
   while (left < right) {
     int32_t mid = left + (right - left) / 2;
@@ -41,7 +42,8 @@ inline int32_t firstGreatOrLeftMostEqual(vector<int32_t> &nums, int32_t target) 
 /*
 https://leetcode.com/problems/successful-pairs-of-spells-and-potions/
 */
-inline vector<int32_t> successfulPairs(vector<int32_t> &spells, vector<int32_t> &potions,
+inline vector<int32_t> successfulPairs(vector<int32_t> &spells,
+                                       vector<int32_t> &potions,
                                        int64_t success) {
   size_t n = spells.size();
   size_t m = potions.size();

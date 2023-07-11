@@ -49,6 +49,7 @@ void dijkstra_origin(vector<vector<pair<T, int>>> &adj_list, int start,
 
   int n = adj_list.size();
   vector<int8_t> seen(n, 0);
+
   auto select = [&]() {
     int res = -1;
     for (int i = 0; i < seen.size(); ++i) {

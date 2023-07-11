@@ -62,7 +62,8 @@ template <typename T> void printElem(T &x, stringstream &ss) {
 };
 
 template <typename TupleT, std::size_t... Is>
-void printTupleManual(TupleT &tp, std::index_sequence<Is...>, stringstream &ss) {
+void printTupleManual(TupleT &tp, std::index_sequence<Is...>,
+                      stringstream &ss) {
   (printElem(std::get<Is>(tp), ss), ...);
 };
 

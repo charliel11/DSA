@@ -22,14 +22,14 @@ void parse_test_case(string &text, TreeNode *&res) {
   q.push(res);
 
   string left, right;
-  while (ss >> left && ss >> right) {
+  while (!q.empty()) {
     TreeNode *cur = q.front();
     q.pop();
-    if (left != "null") {
+    if (ss >> left && left != "null") {
       cur->left = new TreeNode(stoi(left));
       q.push(cur->left);
     }
-    if (right != "null") {
+    if (ss >> right && right != "null") {
       cur->right = new TreeNode(stoi(right));
       q.push(cur->right);
     }
@@ -88,7 +88,9 @@ void parse_test_case(string &text, string &res) {
   ss >> res;
 }
 
-void parse_test_case(string &text, bool &res) { res = text == "true" ? true : false; }
+void parse_test_case(string &text, bool &res) {
+  res = text == "true" ? true : false;
+}
 
 // [true, false]
 void parse_test_case(string &text, vector<bool> &res) {
