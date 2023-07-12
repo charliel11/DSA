@@ -62,7 +62,7 @@ void parse_test_case(string &text, vector<vector<int32_t>> &res) {
   while (ss >> text) {
     auto &tmp = res;
     if (text == "[]" || text == "]") {
-      // tmp.push_back({});
+      tmp.push_back({});
     } else if (text[0] == '[') {
       tmp.push_back({});
       tmp.back().push_back(stoi(text.substr(1)));
